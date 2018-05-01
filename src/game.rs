@@ -3,9 +3,12 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(score: i32) -> Game {
+    pub fn new() -> Game {
         Game {
-            score
+            score: 0,
         }
+    }
+
+    pub fn update(&mut self, dt: f64) {
     }
 }
