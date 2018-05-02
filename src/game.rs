@@ -1,3 +1,6 @@
+pub static WIDTH: f64 = 600.0;
+pub static HEIGHT: f64 = 800.0;
+
 pub struct Game {
     pub score: i32,
 }
