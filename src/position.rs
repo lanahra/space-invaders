@@ -1,14 +1,14 @@
 // Struct for manage position of elements in map
 pub struct Position {
-    pub coordinate: (i32, i32), // A pair of integers for coordinates x and y
+    pub coordinate: (f64, f64), // A pair of integers for coordinates x and y
     // height and width will be used for calculate collision box
-    pub height: i32,
-    pub width: i32,
+    pub height: f64,
+    pub width: f64,
 }
 
 impl Position {
     // Constructor define the fields
-    pub fn new(coordinate: (i32, i32), height: i32, width: i32) -> Position {
+    pub fn new(coordinate: (f64, f64), height: f64, width: f64) -> Position {
         Position {
             coordinate: coordinate,
             height: height,
