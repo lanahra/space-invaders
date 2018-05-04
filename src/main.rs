@@ -4,7 +4,11 @@ extern crate opengl_graphics;
 extern crate piston;
 
 mod game;
+mod position;
+mod alien;
 
+use position::Position;
+use alien::Alien;
 use game::Game;
 use glutin_window::GlutinWindow as Window;
 use graphics::*;
