@@ -6,9 +6,11 @@ extern crate piston;
 mod game;
 mod position;
 mod alien;
+mod shot;
 
 use position::Position;
 use alien::Alien;
+use shot::Shot;
 use game::Game;
 use glutin_window::GlutinWindow as Window;
 use graphics::*;
@@ -75,6 +77,9 @@ fn main() {
     println!("{}", (alien.position.coordinates_collision_box.0).1);
     println!("{}", (alien.position.coordinates_collision_box.1).0);
     println!("{}", (alien.position.coordinates_collision_box.1).1);
+    let mut position2 = Position::new((0.0,0.0), 20.0, 30.0);
+    let shot = Shot::new(position2, shot::PLAYER_SHOT);
+    println!("{}", shot.shot_type);
     let mut app = App::new();
     app.run();
 }
