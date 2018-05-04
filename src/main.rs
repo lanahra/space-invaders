@@ -68,6 +68,13 @@ impl App {
 }
 
 fn main() {
+    let mut position = Position::new((0.0,0.0), 20.0, 30.0);
+    position.generate_collision_box();
+    let alien = Alien::new(position, alien::SPRITE_ALIEN_V1);
+    println!("{}", (alien.position.coordinates_collision_box.0).0);
+    println!("{}", (alien.position.coordinates_collision_box.0).1);
+    println!("{}", (alien.position.coordinates_collision_box.1).0);
+    println!("{}", (alien.position.coordinates_collision_box.1).1);
     let mut app = App::new();
     app.run();
 }
