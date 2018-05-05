@@ -4,6 +4,7 @@ use game::HEIGHT;
 // Struct for manage position of elements in map
 pub struct Position {
     pub center: (f64, f64), // A pair of integers for coordinates x and y
+    pub initial_center: (f64, f64), // A pair of integers for coordinates x and y in initial state
     // height and width will be used for calculate collision box
     pub height: f64,
     pub width: f64,
@@ -14,9 +15,10 @@ impl Position {
     // Constructor define the fields
     pub fn new(center: (f64, f64), height: f64, width: f64) -> Position {
         let mut position = Position {
-            center: center,
-            height: height,
-            width: width,
+            center,
+            initial_center: center,
+            height,
+            width,
             coordinates_collision_box: ((0.0, 0.0), (0.0, 0.0)),
         };
         position.generate_collision_box();
@@ -25,10 +27,10 @@ impl Position {
     }
 
     pub fn generate_collision_box(&mut self) {
-        //First point wiil be bottom left
+        //First point wiil be top left
         (self.coordinates_collision_box.0).0 = self.center.0-(self.width/2.0);
         (self.coordinates_collision_box.0).1 = self.center.1-(self.height/2.0);
-        //Second point wiil be top right
+        //Second point wiil be bottom right
         (self.coordinates_collision_box.1).0 = self.center.0+(self.width/2.0);
         (self.coordinates_collision_box.1).1 = self.center.1+(self.height/2.0);
     }
@@ -37,7 +39,7 @@ impl Position {
         if (self.coordinates_collision_box.0).0 < 0.0 || (self.coordinates_collision_box.0).1 < 0.0 {
             panic!("Position out of bounds!");
         }
-        if (self.coordinates_collision_box.1).0 > game::WIDTH || (self.coordinates_collision_box.1).1 > game::HEIGHT {
+        if (self.coordinates_collision_box.1).0 > WIDTH || (self.coordinates_collision_box.1).1 > HEIGHT {
             panic!("Position out of bounds!");
         }
     }

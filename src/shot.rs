@@ -13,8 +13,8 @@ impl Shot {
     // Constructor fill fields
     pub fn new(position: Position, shot_type: i32) -> Shot {
         Shot {
-            position: position,
-            shot_type: shot_type,
+            position,
+            shot_type,
         }
     }
 }
