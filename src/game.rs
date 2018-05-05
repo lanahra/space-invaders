@@ -31,6 +31,8 @@ impl Game {
     }
 
     pub fn update(&mut self, dt: f64) {
-        
+        for mut alien in &mut self.wave.aliens {
+            alien.step(dt);
+        }
     }
 }
