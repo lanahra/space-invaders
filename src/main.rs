@@ -70,9 +70,15 @@ impl App {
 }
 
 fn main() {
-    let position = Position::new((15.0,10.0), 20.0, 30.0);
+    let position = Position::new((75.0,10.0), 20.0, 30.0);
     let position2 = Position::new((31.0,21.0), 20.0, 30.0);
-    let alien = Alien::new(position, alien::SPRITE_ALIEN_V1);
+    let mut alien = Alien::new(position, alien::SPRITE_ALIEN_V1);
+    let mut x: i32 = 400;
+    while(x > 0) {
+        alien.step(1.0);
+        println!("{} {}", alien.position.center.0, alien.position.center.1);
+        x-=1;
+    }
     let alien2 = Alien::new(position2, alien::SPRITE_ALIEN_V1);
     println!("{}", (alien.position.coordinates_collision_box.0).0);
     println!("{}", (alien.position.coordinates_collision_box.0).1);
@@ -135,4 +141,5 @@ fn draw_field<G: Graphics>(
         transform,
         g
     );
+
 }
