@@ -71,15 +71,25 @@ impl App {
 
 fn main() {
     let mut position = Position::new((0.0,0.0), 20.0, 30.0);
+    let mut position2 = Position::new((31.0,21.0), 20.0, 30.0);
     position.generate_collision_box();
+    position2.generate_collision_box();
     let alien = Alien::new(position, alien::SPRITE_ALIEN_V1);
+    let alien2 = Alien::new(position2, alien::SPRITE_ALIEN_V1);
     println!("{}", (alien.position.coordinates_collision_box.0).0);
     println!("{}", (alien.position.coordinates_collision_box.0).1);
     println!("{}", (alien.position.coordinates_collision_box.1).0);
     println!("{}", (alien.position.coordinates_collision_box.1).1);
-    let mut position2 = Position::new((0.0,0.0), 20.0, 30.0);
-    let shot = Shot::new(position2, shot::PLAYER_SHOT);
+    let mut position3 = Position::new((0.0,0.0), 20.0, 30.0);
+    let shot = Shot::new(position3, shot::PLAYER_SHOT);
     println!("{}", shot.shot_type);
+    let game = Game::new();
+    if game.check_collision(alien.position.coordinates_collision_box, alien2.position.coordinates_collision_box) {
+        println!("colision");
+    }
+    else {
+        println!("no colision");
+    }
     let mut app = App::new();
     app.run();
 }
