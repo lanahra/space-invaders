@@ -1,4 +1,5 @@
-use game;
+use game::WIDTH;
+use game::HEIGHT;
 
 // Struct for manage position of elements in map
 pub struct Position {
