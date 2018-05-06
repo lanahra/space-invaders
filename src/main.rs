@@ -98,7 +98,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
     /// Load assets
     let assets = find_folder::Search::ParentsThenKids(3, 3)
         .for_folder("resources").unwrap();
-    let alien_sprite_a1 = assets.join("invaderA1.png");
+    let alien_sprite_a1 = assets.join("InvaderA1.png");
     let alien_sprite_a1: G2dTexture = Texture::from_path(
         &mut app.window.factory,
         &alien_sprite_a1,
@@ -106,7 +106,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
         &TextureSettings::new()
     ).unwrap();
 
-    let alien_sprite_a2 = assets.join("invaderA2.png");
+    let alien_sprite_a2 = assets.join("InvaderA2.png");
     let alien_sprite_a2: G2dTexture = Texture::from_path(
         &mut app.window.factory,
         &alien_sprite_a2,
@@ -116,7 +116,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
 
     let assets = find_folder::Search::ParentsThenKids(3, 3)
         .for_folder("resources").unwrap();
-    let alien_sprite_b1 = assets.join("invaderB1.png");
+    let alien_sprite_b1 = assets.join("InvaderB1.png");
     let alien_sprite_b1: G2dTexture = Texture::from_path(
         &mut app.window.factory,
         &alien_sprite_b1,
@@ -124,7 +124,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
         &TextureSettings::new()
     ).unwrap();
 
-    let alien_sprite_b2 = assets.join("invaderB2.png");
+    let alien_sprite_b2 = assets.join("InvaderB2.png");
     let alien_sprite_b2: G2dTexture = Texture::from_path(
         &mut app.window.factory,
         &alien_sprite_b2,
@@ -134,7 +134,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
 
     let assets = find_folder::Search::ParentsThenKids(3, 3)
         .for_folder("resources").unwrap();
-    let alien_sprite_c1 = assets.join("invaderC1.png");
+    let alien_sprite_c1 = assets.join("InvaderC1.png");
     let alien_sprite_c1: G2dTexture = Texture::from_path(
         &mut app.window.factory,
         &alien_sprite_c1,
@@ -142,7 +142,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
         &TextureSettings::new()
     ).unwrap();
 
-    let alien_sprite_c2 = assets.join("invaderC2.png");
+    let alien_sprite_c2 = assets.join("InvaderC2.png");
     let alien_sprite_c2: G2dTexture = Texture::from_path(
         &mut app.window.factory,
         &alien_sprite_c2,
