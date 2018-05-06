@@ -1,14 +1,7 @@
-use alien::Alien;
-use alien::HEIGHT_SPRITE_ALIEN_A1;
-use alien::WIDTH_SPRITE_ALIEN_A1;
-use alien::SPRITE_ALIEN_A1;
-use alien::HEIGHT_SPRITE_ALIEN_B1;
-use alien::WIDTH_SPRITE_ALIEN_B1;
-use alien::SPRITE_ALIEN_B1;
-use alien::HEIGHT_SPRITE_ALIEN_C1;
-use alien::WIDTH_SPRITE_ALIEN_C1;
-use alien::SPRITE_ALIEN_C1;
-use position::Position;
+pub mod alien;
+
+use alien::*;
+use game::position::Position;
 use std::collections::LinkedList;
 
 // Constants to define first alien position of wave in screen

@@ -1,4 +1,4 @@
-use position::Position;
+use game::position::Position;
 
 // Constants for specify the sprites of alien
 pub static SPRITE_ALIEN_B1: i32 = 0;

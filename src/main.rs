@@ -6,17 +6,9 @@ extern crate piston_window;
 extern crate find_folder;
 
 mod game;
-mod position;
-mod alien;
-mod shot;
-mod wave;
 mod sprites;
 
-use sprites::Sprites;
-use wave::Wave;
-use position::Position;
-use alien::Alien;
-use shot::Shot;
+use game::wave::alien;
 use game::Game;
 use glutin_window::GlutinWindow as Window;
 use graphics::*;
@@ -94,8 +86,6 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
 
     let game = &mut app.game;
 
-
-    /// Load assets
     let assets = find_folder::Search::ParentsThenKids(3, 3)
         .for_folder("resources").unwrap();
     let alien_sprite_a1 = assets.join("InvaderA1.png");
@@ -156,8 +146,6 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
     game.sprites.alien_b2 = &alien_sprite_b2;
     game.sprites.alien_c1 = &alien_sprite_c1;
     game.sprites.alien_c2 = &alien_sprite_c2;
-    /// Finish Load
-
 
     app.window.draw_2d(e, |c, g| {
         graphics::clear(WHITE, g);

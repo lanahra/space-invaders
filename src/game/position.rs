@@ -1,5 +1,4 @@
-use game::WIDTH;
-use game::HEIGHT;
+use game;
 
 // Struct for manage position of elements in map
 pub struct Position {
@@ -39,7 +38,7 @@ impl Position {
         if (self.coordinates_collision_box.0).0 < 0.0 || (self.coordinates_collision_box.0).1 < 0.0 {
             panic!("Position out of bounds!");
         }
-        if (self.coordinates_collision_box.1).0 > WIDTH || (self.coordinates_collision_box.1).1 > HEIGHT {
+        if (self.coordinates_collision_box.1).0 > game::WIDTH || (self.coordinates_collision_box.1).1 > game::HEIGHT {
             panic!("Position out of bounds!");
         }
     }

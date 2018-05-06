@@ -1,8 +1,13 @@
-use wave::Wave;
-use sprites::Sprites;
+mod position;
+pub mod wave;
+
+use self::wave::Wave;
+use super::sprites::Sprites;
 
 pub static WIDTH: f64 = 600.0;
 pub static HEIGHT: f64 = 800.0;
+
+
 
 pub struct Game {
     pub score: i32,
@@ -18,7 +23,7 @@ impl Game {
             sprites: Sprites::new(),
         }
     }
-    
+
     pub fn check_collision(&self, box_one: ((f64,f64),(f64,f64)), box_two: ((f64,f64),(f64,f64))) -> bool {
         if (box_one.0).0 >= (box_two.0).0 && (box_one.0).0 <= (box_two.1).0 {
             if (box_one.0).1 >= (box_two.0).1 && (box_one.0).1 <= (box_two.1).1 {
