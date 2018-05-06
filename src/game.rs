@@ -1,18 +1,21 @@
 use wave::Wave;
+use sprites::Sprites;
 
 pub static WIDTH: f64 = 600.0;
 pub static HEIGHT: f64 = 800.0;
 
 pub struct Game {
     pub score: i32,
-    pub wave: Wave
+    pub wave: Wave,
+    pub sprites: Sprites,
 }
 
 impl Game {
     pub fn new() -> Game {
         Game {
             score: 0,
-            wave: Wave::new()
+            wave: Wave::new(),
+            sprites: Sprites::new(),
         }
     }
     
@@ -32,7 +35,7 @@ impl Game {
 
     pub fn update(&mut self, dt: f64) {
         for mut alien in &mut self.wave.aliens {
-            alien.step(dt);
+            alien.step(dt, 20.0);
         }
     }
 }
