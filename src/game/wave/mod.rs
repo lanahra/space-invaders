@@ -3,66 +3,123 @@ pub mod alien;
 use alien::*;
 use game::position::Position;
 use std::collections::LinkedList;
+use std::collections::linked_list::Iter;
 
-// Constants to define first alien position of wave in screen
-pub static FIRST_ALIEN_POSITION_X: f64 = 90.0;
-pub static FIRST_ALIEN_POSITION_Y: f64 = 200.0;
+static POSITION: Position =
+    Position {
+        x: 50.0,
+        y: 60.0,
+    };
 
-// Constants with number of aliens, spaces between them and rows
-pub static NUMBER_OF_ALIENS_PER_ROW: i32 = 11;
-pub static NUMBER_OF_ROWS: i32 = 5;
-pub static HORIZONTAL_SPACES_BETWEEN_ALIENS: f64 = 12.0;
-pub static VERTICAL_SPACES_BETWEEN_ALIENS: f64 = 10.0;
+static COLUMNS: u32 = 11;
+static ROWS: u32 = 5;
 
-// Struct to manage waves in game
+static WIDTH_GAP: f64 = 40.0;
+static HEIGHT_GAP: f64 = 30.0;
+
+static STEPS: u32 = 14;
+static STEP_DX: f64 = 7.0;
+static STEP_DY: f64 = 10.0;
+
+enum State {
+    MovingRight(u32),
+    MovingLeft(u32),
+}
+
 pub struct Wave {
-    pub aliens: LinkedList<Alien>
+    pub aliens: LinkedList<Alien>,
+    pub step: f64,
+    timer: f64,
+    state: State,
 }
 
 impl Wave {
-    // Fills the fields and generates aliens
     pub fn new() -> Wave {
-        let mut wave = Wave {
-            aliens: LinkedList::new()
-        };
-        wave.generate_aliens();
-        return wave;
+        Wave {
+            aliens: Wave::create_aliens(),
+            step: 0.1,
+            timer: 0.0,
+            state: State::MovingRight(0),
+        }
     }
 
-    // Put aliens in their must be places
-    pub fn generate_aliens(&mut self) {
-        let mut width: f64;
-        let mut height: f64;
-        let mut sprite: i32;
-        for i in 0..NUMBER_OF_ROWS {
-            for j in 0..NUMBER_OF_ALIENS_PER_ROW {
-                if i == 0 {
-                    width = WIDTH_SPRITE_ALIEN_A1;
-                    height = HEIGHT_SPRITE_ALIEN_A1;
-                    sprite = SPRITE_ALIEN_A1;
-                }
-                else if i == 1 || i == 2 {
-                    width = WIDTH_SPRITE_ALIEN_B1;
-                    height = HEIGHT_SPRITE_ALIEN_B1;
-                    sprite = SPRITE_ALIEN_B1;
-                }
-                else {
-                    width = WIDTH_SPRITE_ALIEN_C1;
-                    height = HEIGHT_SPRITE_ALIEN_C1;
-                    sprite = SPRITE_ALIEN_C1;
-                }
-                // x_position is the sum of all previous aliens and spaces width plus initial position
-                let x_position = FIRST_ALIEN_POSITION_X+j as f64 *(width+HORIZONTAL_SPACES_BETWEEN_ALIENS);
+    fn create_aliens() -> LinkedList<Alien> {
+        let mut aliens: LinkedList<Alien> = LinkedList::new();
 
-                // y_position is the sum of all previous aliens and spaces width plus initial position
-                let y_position = FIRST_ALIEN_POSITION_Y+i as f64 *(VERTICAL_SPACES_BETWEEN_ALIENS + height);
+        for i in 0..ROWS {
+            for j in 0..COLUMNS {
+                let position =
+                    Position {
+                        x: self::POSITION.x + (j as f64 * self::WIDTH_GAP),
+                        y: self::POSITION.y + (i as f64 * self::HEIGHT_GAP),
+                    };
 
-                let position = Position::new((x_position, y_position),
-                                             height,
-                                             width);
-                let alien = Alien::new(position, sprite);
-                self.aliens.push_back(alien);
+                let alien =
+                    match i {
+                        0 =>
+                            Alien::new(position, self::Kind::Alpha),
+
+                        1 | 2 =>
+                            Alien::new(position, self::Kind::Beta),
+
+                        _ =>
+                            Alien::new(position, self::Kind::Gamma),
+                    };
+
+                aliens.push_back(alien);
             }
         }
+
+        return aliens;
+    }
+
+    pub fn update(&mut self, dt: f64) {
+        self.timer += dt;
+
+        if self.timer >= self.step {
+            self.timer -= self.step;
+
+            match self.state {
+                State::MovingRight(i) if i < self::STEPS  => {
+                    for alien in self.aliens.iter_mut() {
+                        alien.change_state();
+                        alien.move_x(STEP_DX);
+                    }
+
+                    self.state = State::MovingRight(i + 1);
+                }
+
+                State::MovingRight(i) => {
+                    for alien in self.aliens.iter_mut() {
+                        alien.change_state();
+                        alien.move_y(STEP_DY);
+                    }
+
+                    self.state = State::MovingLeft(0);
+                }
+
+                State::MovingLeft(i) if i < self::STEPS  => {
+                    for alien in self.aliens.iter_mut() {
+                        alien.change_state();
+                        alien.move_x(-STEP_DX);
+                    }
+
+                    self.state = State::MovingLeft(i + 1);
+                }
+
+                State::MovingLeft(i) => {
+                    for alien in self.aliens.iter_mut() {
+                        alien.change_state();
+                        alien.move_y(STEP_DY);
+                    }
+
+                    self.state = State::MovingRight(0);
+                }
+            }
+        }
+    }
+
+    pub fn iter(&self) -> Iter<Alien> {
+        self.aliens.iter()
     }
 }

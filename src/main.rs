@@ -28,7 +28,6 @@ pub struct App {
 
 impl App {
     fn new() -> App {
-        // Change this to OpenGL::V2_1 if not working.
         let opengl = OpenGL::V3_2;
 
         // Create an Glutin window.
@@ -37,7 +36,6 @@ impl App {
                 [game::WIDTH as u32, game::HEIGHT as u32]
             )
             .opengl(opengl)
-            .exit_on_esc(true)
             .build()
             .unwrap();
 
@@ -183,31 +181,85 @@ fn draw_alien<G>(
     g: &mut G,
     game: &mut Game) where G: Graphics<Texture = G2dTexture>{
 
-    const BLACK: [f32; 4] = [255.0, 0.0, 0.0, 1.0];
-
     let scale = height as f64 / game::HEIGHT;
 
-    for alien in &game.wave.aliens {
+    for alien in game.wave.iter() {
         let transform =
             c.transform
-                .zoom(scale).trans((alien.position.coordinates_collision_box.0).0, (alien.position.coordinates_collision_box.0).1);
-        if alien.sprite == alien::SPRITE_ALIEN_A1 {
-            Image::new().draw(unsafe{&*game.sprites.alien_a1}, &c.draw_state, transform, g);
-        }
-        else if alien.sprite == alien::SPRITE_ALIEN_A2 {
-            Image::new().draw(unsafe{&*game.sprites.alien_a2}, &c.draw_state, transform, g);
-        }
-        else if alien.sprite == alien::SPRITE_ALIEN_B1 {
-            Image::new().draw(unsafe{&*game.sprites.alien_b1}, &c.draw_state, transform, g);
-        }
-        else if alien.sprite == alien::SPRITE_ALIEN_B2 {
-            Image::new().draw(unsafe{&*game.sprites.alien_b2}, &c.draw_state, transform, g);
-        }
-        else if alien.sprite == alien::SPRITE_ALIEN_C1 {
-            Image::new().draw(unsafe{&*game.sprites.alien_c1}, &c.draw_state, transform, g);
-        }
-        else if alien.sprite == alien::SPRITE_ALIEN_C2 {
-            Image::new().draw(unsafe{&*game.sprites.alien_c2}, &c.draw_state, transform, g);
+                .zoom(scale)
+                .trans(
+                    alien.position.x - (alien.size.width / 2.0),
+                    alien.position.y - (alien.size.height / 2.0)
+                );
+
+        match alien.state {
+            alien::State::ArmsUp => {
+                match alien.kind {
+                    alien::Kind::Alpha => {
+                        Image::new()
+                            .draw(
+                                unsafe{&*game.sprites.alien_a1},
+                                &c.draw_state,
+                                transform,
+                                g
+                            );
+                    }
+
+                    alien::Kind::Beta => {
+                        Image::new()
+                            .draw(
+                                unsafe{&*game.sprites.alien_b1},
+                                &c.draw_state,
+                                transform,
+                                g
+                            );
+                    }
+
+                    alien::Kind::Gamma => {
+                        Image::new()
+                            .draw(
+                                unsafe{&*game.sprites.alien_c1},
+                                &c.draw_state,
+                                transform,
+                                g
+                            );
+                    }
+                }
+            }
+
+            alien::State::ArmsDown => {
+                match alien.kind {
+                    alien::Kind::Alpha => {
+                        Image::new()
+                            .draw(
+                                unsafe{&*game.sprites.alien_a2},
+                                &c.draw_state,
+                                transform,
+                                g
+                            );
+                    }
+
+                    alien::Kind::Beta => {
+                        Image::new()
+                            .draw(
+                                unsafe{&*game.sprites.alien_b2},
+                                &c.draw_state,
+                                transform,
+                                g
+                            );
+                    }
+
+                    alien::Kind::Gamma => {
+                        Image::new()
+                            .draw(
+                                unsafe{&*game.sprites.alien_c2},
+                                &c.draw_state,
+                                transform,
+                                g
+                            );
+                    }
+                }
+            }
         }
     }
 

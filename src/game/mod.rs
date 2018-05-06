@@ -1,4 +1,5 @@
 mod position;
+mod size;
 pub mod wave;
 
 use self::wave::Wave;
@@ -6,8 +7,6 @@ use super::sprites::Sprites;
 
 pub static WIDTH: f64 = 600.0;
 pub static HEIGHT: f64 = 800.0;
-
-
 
 pub struct Game {
     pub score: i32,
@@ -39,8 +38,6 @@ impl Game {
     }
 
     pub fn update(&mut self, dt: f64) {
-        for mut alien in &mut self.wave.aliens {
-            alien.step(dt, 20.0);
-        }
+        self.wave.update(dt);
     }
 }
