@@ -1,9 +1,10 @@
+pub mod canon;
 mod position;
 mod size;
 pub mod wave;
 
+use self::canon::Canon;
 use self::wave::Wave;
-use super::sprites::Sprites;
 
 pub static WIDTH: f64 = 600.0;
 pub static HEIGHT: f64 = 800.0;
@@ -11,7 +12,7 @@ pub static HEIGHT: f64 = 800.0;
 pub struct Game {
     pub score: i32,
     pub wave: Wave,
-    pub sprites: Sprites,
+    pub canon: Canon,
 }
 
 impl Game {
@@ -19,7 +20,7 @@ impl Game {
         Game {
             score: 0,
             wave: Wave::new(),
-            sprites: Sprites::new(),
+            canon: Canon::new(),
         }
     }
 
@@ -39,5 +40,6 @@ impl Game {
 
     pub fn update(&mut self, dt: f64) {
         self.wave.update(dt);
+        self.canon.update(dt);
     }
 }

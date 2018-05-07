@@ -8,6 +8,7 @@ pub struct Sprites {
     pub alien_b2: *const G2dTexture,
     pub alien_c1: *const G2dTexture,
     pub alien_c2: *const G2dTexture,
+    pub canon: *const G2dTexture,
 }
 
 impl Sprites {
@@ -19,6 +20,7 @@ impl Sprites {
             alien_b2: ptr::null(),
             alien_c1: ptr::null(),
             alien_c2: ptr::null(),
+            canon: ptr::null(),
         }
     }
 }
