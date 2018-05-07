@@ -37,7 +37,7 @@ impl Wave {
     pub fn new() -> Wave {
         Wave {
             aliens: Wave::create_aliens(),
-            step: 0.1,
+            step: 0.5,
             timer: 0.0,
             state: State::MovingRight(0),
         }
