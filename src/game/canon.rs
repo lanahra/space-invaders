@@ -34,11 +34,11 @@ impl Canon {
     }
 
     pub fn move_right(&mut self) {
-        self.state = State::MovingRight;
+            self.state = State::MovingRight;
     }
 
     pub fn move_left(&mut self) {
-        self.state = State::MovingLeft;
+            self.state = State::MovingLeft;
     }
 
     pub fn idle(&mut self) {
@@ -48,11 +48,15 @@ impl Canon {
     pub fn update(&mut self, dt: f64) {
         match self.state {
             State::MovingRight => {
-                self.position.x += dt * VELOCITY;
+                if self.position.x+self.size.width/2.0 < WIDTH {
+                    self.position.x += dt * VELOCITY;
+                }
             }
 
             State::MovingLeft => {
-                self.position.x -= dt * VELOCITY;
+                if self.position.x-self.size.width/2.0 > 0.0 {
+                    self.position.x -= dt * VELOCITY;
+                }
             }
 
             _ => {}
