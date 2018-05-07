@@ -52,6 +52,76 @@ impl App {
     }
 
     fn run(&mut self) {
+        let assets = find_folder::Search::ParentsThenKids(3, 3)
+            .for_folder("resources").unwrap();
+        let alien_sprite_a1 = assets.join("InvaderA1.png");
+        let alien_sprite_a1: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &alien_sprite_a1,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let alien_sprite_a2 = assets.join("InvaderA2.png");
+        let alien_sprite_a2: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &alien_sprite_a2,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let assets = find_folder::Search::ParentsThenKids(3, 3)
+            .for_folder("resources").unwrap();
+        let alien_sprite_b1 = assets.join("InvaderB1.png");
+        let alien_sprite_b1: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &alien_sprite_b1,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let alien_sprite_b2 = assets.join("InvaderB2.png");
+        let alien_sprite_b2: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &alien_sprite_b2,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let assets = find_folder::Search::ParentsThenKids(3, 3)
+            .for_folder("resources").unwrap();
+        let alien_sprite_c1 = assets.join("InvaderC1.png");
+        let alien_sprite_c1: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &alien_sprite_c1,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let alien_sprite_c2 = assets.join("InvaderC2.png");
+        let alien_sprite_c2: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &alien_sprite_c2,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let canon_sprite = assets.join("Ship.png");
+        let canon_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &canon_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        self.sprites.alien_a1 = &alien_sprite_a1;
+        self.sprites.alien_a2 = &alien_sprite_a2;
+        self.sprites.alien_b1 = &alien_sprite_b1;
+        self.sprites.alien_b2 = &alien_sprite_b2;
+        self.sprites.alien_c1 = &alien_sprite_c1;
+        self.sprites.alien_c2 = &alien_sprite_c2;
+        self.sprites.canon = &canon_sprite;
+
         let mut events = Events::new(EventSettings::new());
         while let Some(e) = self.window.next() {
             if let Some(r) = e.render_args() {
@@ -124,76 +194,6 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
 
     let width = game::WIDTH * scale;
     let height = game::HEIGHT * scale;
-
-    let assets = find_folder::Search::ParentsThenKids(3, 3)
-        .for_folder("resources").unwrap();
-    let alien_sprite_a1 = assets.join("InvaderA1.png");
-    let alien_sprite_a1: G2dTexture = Texture::from_path(
-        &mut app.window.factory,
-        &alien_sprite_a1,
-        Flip::None,
-        &TextureSettings::new()
-    ).unwrap();
-
-    let alien_sprite_a2 = assets.join("InvaderA2.png");
-    let alien_sprite_a2: G2dTexture = Texture::from_path(
-        &mut app.window.factory,
-        &alien_sprite_a2,
-        Flip::None,
-        &TextureSettings::new()
-    ).unwrap();
-
-    let assets = find_folder::Search::ParentsThenKids(3, 3)
-        .for_folder("resources").unwrap();
-    let alien_sprite_b1 = assets.join("InvaderB1.png");
-    let alien_sprite_b1: G2dTexture = Texture::from_path(
-        &mut app.window.factory,
-        &alien_sprite_b1,
-        Flip::None,
-        &TextureSettings::new()
-    ).unwrap();
-
-    let alien_sprite_b2 = assets.join("InvaderB2.png");
-    let alien_sprite_b2: G2dTexture = Texture::from_path(
-        &mut app.window.factory,
-        &alien_sprite_b2,
-        Flip::None,
-        &TextureSettings::new()
-    ).unwrap();
-
-    let assets = find_folder::Search::ParentsThenKids(3, 3)
-        .for_folder("resources").unwrap();
-    let alien_sprite_c1 = assets.join("InvaderC1.png");
-    let alien_sprite_c1: G2dTexture = Texture::from_path(
-        &mut app.window.factory,
-        &alien_sprite_c1,
-        Flip::None,
-        &TextureSettings::new()
-    ).unwrap();
-
-    let alien_sprite_c2 = assets.join("InvaderC2.png");
-    let alien_sprite_c2: G2dTexture = Texture::from_path(
-        &mut app.window.factory,
-        &alien_sprite_c2,
-        Flip::None,
-        &TextureSettings::new()
-    ).unwrap();
-
-    let canon_sprite = assets.join("Ship.png");
-    let canon_sprite: G2dTexture = Texture::from_path(
-        &mut app.window.factory,
-        &canon_sprite,
-        Flip::None,
-        &TextureSettings::new()
-    ).unwrap();
-
-    app.sprites.alien_a1 = &alien_sprite_a1;
-    app.sprites.alien_a2 = &alien_sprite_a2;
-    app.sprites.alien_b1 = &alien_sprite_b1;
-    app.sprites.alien_b2 = &alien_sprite_b2;
-    app.sprites.alien_c1 = &alien_sprite_c1;
-    app.sprites.alien_c2 = &alien_sprite_c2;
-    app.sprites.canon = &canon_sprite;
 
     let game = &app.game;
     let sprites = &app.sprites;
