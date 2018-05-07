@@ -11,6 +11,8 @@ mod sprites;
 use game::wave::alien;
 use game::Game;
 use game::canon::Canon;
+use game::bullet::Shot;
+use game::bullet::ShotType;
 use game::wave::Wave;
 use sprites::Sprites;
 use glutin_window::GlutinWindow as Window;
@@ -114,6 +116,14 @@ impl App {
             &TextureSettings::new()
         ).unwrap();
 
+        let bullet_sprite = assets.join("Bullet.png");
+        let bullet_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &bullet_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
         self.sprites.alien_a1 = &alien_sprite_a1;
         self.sprites.alien_a2 = &alien_sprite_a2;
         self.sprites.alien_b1 = &alien_sprite_b1;
@@ -121,6 +131,7 @@ impl App {
         self.sprites.alien_c1 = &alien_sprite_c1;
         self.sprites.alien_c2 = &alien_sprite_c2;
         self.sprites.canon = &canon_sprite;
+        self.sprites.bullet = &bullet_sprite;
 
         let mut events = Events::new(EventSettings::new());
         while let Some(e) = self.window.next() {
@@ -147,17 +158,29 @@ impl App {
     }
 
     fn input(&mut self, args: &ButtonArgs) {
-        let canon = &mut self.game.canon;
+        let game = &mut self.game;
 
         match args.state {
             ButtonState::Press => {
                 match args.button {
                     Button::Keyboard(Key::A) => {
-                        canon.move_left();
+                        game.canon.move_left();
+                    }
+
+                    Button::Keyboard(Key::Left) => {
+                        game.canon.move_left();
                     }
 
                     Button::Keyboard(Key::D) => {
-                        canon.move_right();
+                        game.canon.move_right();
+                    }
+
+                    Button::Keyboard(Key::Right) => {
+                        game.canon.move_right();
+                    }
+
+                    Button::Keyboard(Key::Space) => {
+                        game.create_player_shot();
                     }
 
                     _ => {}
@@ -167,11 +190,19 @@ impl App {
             ButtonState::Release => {
                 match args.button {
                     Button::Keyboard(Key::A) => {
-                        canon.idle();
+                        game.canon.idle();
+                    }
+
+                    Button::Keyboard(Key::Left) => {
+                        game.canon.idle();
                     }
 
                     Button::Keyboard(Key::D) => {
-                        canon.idle();
+                        game.canon.idle();
+                    }
+
+                    Button::Keyboard(Key::Right) => {
+                        game.canon.idle();
                     }
 
                     _ => {}
@@ -203,6 +234,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
         draw_field(height, &c, g);
         draw_alien(height, &game.wave, sprites, &c, g);
         draw_canon(height, &game.canon, sprites, &c, g);
+        draw_player_shots(height, &game, sprites, &c, g);
     });
 }
 
@@ -345,4 +377,34 @@ fn draw_canon<G>(
                 transform,
                 g
             );
+}
+
+fn draw_player_shots<G>(
+    height: f64,
+    game: &Game,
+    sprites: &Sprites,
+    c: &Context,
+    g: &mut G
+) where G: Graphics<Texture = G2dTexture>{
+
+    let scale = height as f64 / game::HEIGHT;
+
+    for shot in game.iterate_player_shots() {
+        let transform =
+            c.transform
+                .zoom(scale)
+                .trans(
+                    shot.position.x - (shot.size.width / 2.0),
+                    shot.position.y - (shot.size.height / 2.0)
+                );
+
+        Image::new()
+            .draw(
+                unsafe{&*sprites.bullet},
+                &c.draw_state,
+                transform,
+                g
+            );
+    }
+
 }
