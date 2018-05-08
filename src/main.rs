@@ -234,7 +234,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
         draw_field(height, &c, g);
         draw_alien(height, &game.wave, sprites, &c, g);
         draw_canon(height, &game.canon, sprites, &c, g);
-        draw_player_shots(height, &game, sprites, &c, g);
+        draw_shots(height, &game, sprites, &c, g);
     });
 }
 
@@ -379,7 +379,7 @@ fn draw_canon<G>(
             );
 }
 
-fn draw_player_shots<G>(
+fn draw_shots<G>(
     height: f64,
     game: &Game,
     sprites: &Sprites,
@@ -389,15 +389,15 @@ fn draw_player_shots<G>(
 
     let scale = height as f64 / game::HEIGHT;
 
-    for shot in game.iterate_player_shots() {
-        let transform =
-            c.transform
-                .zoom(scale)
-                .trans(
-                    shot.position.x - (shot.size.width / 2.0),
-                    shot.position.y - (shot.size.height / 2.0)
-                );
+    let transform =
+        c.transform
+            .zoom(scale)
+            .trans(
+                game.player_shot.position.x - (game.player_shot.size.width / 2.0),
+                game.player_shot.position.y - (game.player_shot.size.height / 2.0)
+            );
 
+    if game.player_shot.is_active() {
         Image::new()
             .draw(
                 unsafe{&*sprites.bullet},

@@ -4,11 +4,16 @@ use game::WIDTH;
 use game::HEIGHT;
 
 
-const VELOCITY: f64 = 0.8333 * WIDTH;
+const VELOCITY: f64 = 1.3 * WIDTH;
 
 pub enum ShotType {
     PlayerShot,
     EnemyShot,
+}
+
+pub enum ShotActive {
+    Active,
+    Inactive,
 }
 
 // Struct for manage shots
@@ -16,6 +21,7 @@ pub struct Shot {
     pub position: Position,
     pub shot_type: ShotType,
     pub size: Size,
+    pub active: ShotActive,
 }
 
 impl Shot {
@@ -26,9 +32,28 @@ impl Shot {
             shot_type: ShotType::PlayerShot,
             size:
                 Size {
-                    width: 0.01*WIDTH,
+                    width: 0.004*WIDTH,
                     height: 0.02125*HEIGHT,
                 },
+            active : ShotActive::Inactive,
+        }
+    }
+    pub fn activate_shot(&mut self) {
+        self.active = ShotActive::Active;
+    }
+
+    pub fn inactivate_shot(&mut self) {
+        self.active = ShotActive::Inactive;
+    }
+
+    pub fn is_active(&self) -> bool {
+        match self.active {
+            ShotActive::Active => {
+                return true;
+            }
+            ShotActive::Inactive => {
+                return false;
+            }
         }
     }
 
@@ -41,16 +66,22 @@ impl Shot {
     }
 
     pub fn update(&mut self, dt: f64) {
-        match self.shot_type {
-            ShotType::PlayerShot => {
-                self.position.y -= dt * VELOCITY;
-            }
+        if self.is_active() {
+            match self.shot_type {
+                ShotType::PlayerShot if self.position.y < 0.0 => {
+                    self.inactivate_shot();
+                }
 
-            ShotType::EnemyShot => {
-                self.position.y += dt * VELOCITY;
-            }
+                ShotType::PlayerShot => {
+                    self.position.y -= dt * VELOCITY;
+                }
 
-            _ => {}
+                ShotType::EnemyShot => {
+                    self.position.y += dt * VELOCITY;
+                }
+
+                _ => {}
+            }
         }
     }
 

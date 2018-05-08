@@ -6,6 +6,7 @@ use game::WIDTH;
 use game::HEIGHT;
 use std::collections::LinkedList;
 use std::collections::linked_list::Iter;
+use std::collections::linked_list::IterMut;
 
 const POSITION: Position =
     Position {
@@ -39,7 +40,7 @@ impl Wave {
     pub fn new() -> Wave {
         Wave {
             aliens: Wave::create_aliens(),
-            step: 0.5,
+            step: 1.0,
             timer: 0.0,
             state: State::MovingRight(0),
         }
@@ -123,5 +124,9 @@ impl Wave {
 
     pub fn iter(&self) -> Iter<Alien> {
         self.aliens.iter()
+    }
+
+    pub fn iter_mut(&mut self) -> IterMut<Alien> {
+        self.aliens.iter_mut()
     }
 }
