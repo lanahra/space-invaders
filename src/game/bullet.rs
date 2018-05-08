@@ -1,7 +1,10 @@
 use game::position::Position;
 use game::size::Size;
+use game::WIDTH;
+use game::HEIGHT;
 
-static VELOCITY: f64 = 500.0;
+
+const VELOCITY: f64 = 0.8333 * WIDTH;
 
 pub enum ShotType {
     PlayerShot,
@@ -23,8 +26,8 @@ impl Shot {
             shot_type: ShotType::PlayerShot,
             size:
                 Size {
-                    width: 6.0,
-                    height: 17.0,
+                    width: 0.01*WIDTH,
+                    height: 0.02125*HEIGHT,
                 },
         }
     }

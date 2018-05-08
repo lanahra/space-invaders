@@ -1,5 +1,7 @@
 use game::position::Position;
 use game::size::Size;
+use game::WIDTH;
+use game::HEIGHT;
 
 pub enum Kind {
     Alpha,
@@ -27,8 +29,8 @@ impl Alien {
             state: State::ArmsUp,
             size:
                 Size {
-                    width: 30.0,
-                    height: 20.0,
+                    width: 0.05 * WIDTH,
+                    height: 0.025 * HEIGHT,
                 },
         }
     }

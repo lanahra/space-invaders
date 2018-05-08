@@ -1,8 +1,9 @@
 use game::WIDTH;
+use game::HEIGHT;
 use game::position::Position;
 use game::size::Size;
 
-static VELOCITY: f64 = 500.0;
+const VELOCITY: f64 = 0.8333 * WIDTH;
 
 pub enum State {
     Idle,
@@ -22,12 +23,12 @@ impl Canon {
             position:
                 Position {
                     x: WIDTH / 2.0,
-                    y: 700.0
+                    y: 0.875*HEIGHT
                 },
             size:
                 Size {
-                    width: 60.0,
-                    height: 32.0,
+                    width: 0.1*WIDTH,
+                    height: 0.04375*HEIGHT,
                 },
             state: State::Idle,
         }

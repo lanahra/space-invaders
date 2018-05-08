@@ -2,24 +2,26 @@ pub mod alien;
 
 use alien::*;
 use game::position::Position;
+use game::WIDTH;
+use game::HEIGHT;
 use std::collections::LinkedList;
 use std::collections::linked_list::Iter;
 
-static POSITION: Position =
+const POSITION: Position =
     Position {
-        x: 50.0,
-        y: 60.0,
+        x: 0.083333 * WIDTH,
+        y: 0.075 * HEIGHT,
     };
 
-static COLUMNS: u32 = 11;
-static ROWS: u32 = 5;
+const COLUMNS: u32 = 11;
+const ROWS: u32 = 5;
 
-static WIDTH_GAP: f64 = 40.0;
-static HEIGHT_GAP: f64 = 30.0;
+const WIDTH_GAP: f64 = 0.06666 * WIDTH;
+const HEIGHT_GAP: f64 = 0.0375 * HEIGHT;
 
-static STEPS: u32 = 14;
-static STEP_DX: f64 = 7.0;
-static STEP_DY: f64 = 10.0;
+const STEPS: u32 = 14;
+const STEP_DX: f64 = 0.0116666 * WIDTH;
+const STEP_DY: f64 = 0.0125 * HEIGHT;
 
 enum State {
     MovingRight(u32),
@@ -83,7 +85,7 @@ impl Wave {
                 State::MovingRight(i) if i < self::STEPS  => {
                     for alien in self.aliens.iter_mut() {
                         alien.change_state();
-                        alien.move_x(STEP_DX);
+                        alien.move_x(STEP_DX );
                     }
 
                     self.state = State::MovingRight(i + 1);
