@@ -2,6 +2,7 @@ use game::position::Position;
 use game::size::Size;
 use game::WIDTH;
 use game::HEIGHT;
+use game::collision::Collision;
 
 pub enum Kind {
     Alpha,
@@ -53,5 +54,15 @@ impl Alien {
 
     pub fn move_y(&mut self, dy: f64) {
         self.position.y += dy;
+    }
+}
+
+impl Collision for Alien {
+    fn position(&self) -> &Position {
+        &self.position
+    }
+
+    fn size(&self) -> &Size {
+        &self.size
     }
 }

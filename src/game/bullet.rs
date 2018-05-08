@@ -2,7 +2,7 @@ use game::position::Position;
 use game::size::Size;
 use game::WIDTH;
 use game::HEIGHT;
-
+use game::collision::Collision;
 
 const VELOCITY: f64 = 1.3 * WIDTH;
 
@@ -84,6 +84,14 @@ impl Shot {
             }
         }
     }
+}
 
+impl Collision for Shot {
+    fn position(&self) -> &Position {
+        &self.position
+    }
 
+    fn size(&self) -> &Size {
+        &self.size
+    }
 }

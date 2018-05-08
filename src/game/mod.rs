@@ -2,15 +2,16 @@ pub mod canon;
 pub mod bullet;
 mod position;
 mod size;
+mod collision;
 pub mod wave;
 
 use self::canon::Canon;
 use self::position::Position;
+use self::collision::Collision;
 use self::wave::Wave;
 use self::bullet::Shot;
 use std::collections::LinkedList;
 use std::collections::linked_list::Iter;
-
 
 pub const WIDTH: f64 = 600.0;
 pub const HEIGHT: f64 = 800.0;
@@ -41,10 +42,8 @@ impl Game {
     }
 
     pub fn check_player_shot_collision(&mut self) {
-        for alien in self.wave.iter_mut() {
-            if check_collision(
-                ((self.player_shot.position.x-(self.player_shot.size.width/2.0), self.player_shot.position.y-(self.player_shot.size.height/2.0)), (self.player_shot.position.x+(self.player_shot.size.width/2.0), self.player_shot.position.y+(self.player_shot.size.height/2.0))),
-                ((alien.position.x-(alien.size.width/2.0), alien.position.y-(alien.size.height/2.0)), (alien.position.x+(alien.size.width/2.0), alien.position.y+(alien.size.height/2.0)))) {
+        for alien in self.wave.iter() {
+            if self.player_shot.overlaps(alien) {
                 self.player_shot.inactivate_shot();
             }
         }
@@ -56,18 +55,4 @@ impl Game {
         self.canon.update(dt);
         self.player_shot.update(dt);
     }
-}
-
-pub fn check_collision(box_one: ((f64,f64),(f64,f64)), box_two: ((f64,f64),(f64,f64))) -> bool {
-    if (box_one.0).0 >= (box_two.0).0 && (box_one.0).0 <= (box_two.1).0 {
-        if (box_one.0).1 >= (box_two.0).1 && (box_one.0).1 <= (box_two.1).1 {
-            return true;
-        }
-    }
-    if (box_one.1).0 >= (box_two.0).0 && (box_one.1).0 <= (box_two.1).0 {
-        if (box_one.1).1 >= (box_two.0).1 && (box_one.1).1 <= (box_two.1).1 {
-            return true;
-        }
-    }
-    return false;
 }

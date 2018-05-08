@@ -2,6 +2,7 @@ use game::WIDTH;
 use game::HEIGHT;
 use game::position::Position;
 use game::size::Size;
+use game::collision::Collision;
 
 const VELOCITY: f64 = 0.8333 * WIDTH;
 
@@ -62,5 +63,15 @@ impl Canon {
 
             _ => {}
         }
+    }
+}
+
+impl Collision for Canon {
+    fn position(&self) -> &Position {
+        &self.position
+    }
+
+    fn size(&self) -> &Size {
+        &self.size
     }
 }
