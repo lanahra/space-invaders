@@ -10,7 +10,7 @@ use std::collections::linked_list::IterMut;
 
 const ROWS: u32 = 3;
 const COLUMNS: u32 = 4;
-const WIDTH_GAP: f64 = 0.05 * WIDTH;
+const WIDTH_GAP: f64 = 0.025 * WIDTH;
 const HEIGHT_GAP: f64 = 0.025 * WIDTH;
 
 pub struct Bunker {

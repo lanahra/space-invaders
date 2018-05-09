@@ -22,8 +22,8 @@ const POSITION_BUNKER: Position =
         y: 0.6875 * HEIGHT,
     };
 
-pub const BUNKERS: u32 = 3;
-pub const BUNKERS_GAP: f64 = 0.32 * WIDTH;
+pub const BUNKERS: u32 = 4;
+pub const BUNKERS_GAP: f64 = 0.23 * WIDTH;
 pub const WIDTH: f64 = 600.0;
 pub const HEIGHT: f64 = 800.0;
 
