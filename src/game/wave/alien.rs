@@ -30,7 +30,7 @@ impl Alien {
             state: State::ArmsUp,
             size:
                 Size {
-                    width: 0.04 * WIDTH,
+                    width: 0.05 * WIDTH,
                     height: 0.025 * HEIGHT,
                 },
         }

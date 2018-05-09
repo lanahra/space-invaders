@@ -8,6 +8,8 @@ extern crate find_folder;
 mod game;
 mod sprites;
 
+use game::bunker::block;
+use game::bunker::Bunker;
 use game::wave::alien;
 use game::Game;
 use game::canon::Canon;
@@ -24,6 +26,7 @@ use piston::input::*;
 use piston::window::WindowSettings;
 use graphics::rectangle::square;
 use std::path::Path;
+use std::collections::LinkedList;
 
 pub struct App {
     gl: GlGraphics,
@@ -124,6 +127,30 @@ impl App {
             &TextureSettings::new()
         ).unwrap();
 
+        let full_block_sprite = assets.join("FullBlock.png");
+        let full_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &full_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let ok_block_sprite = assets.join("OkBlock.png");
+        let ok_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &ok_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let weak_block_sprite = assets.join("WeakBlock.png");
+        let weak_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &weak_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
         self.sprites.alien_a1 = &alien_sprite_a1;
         self.sprites.alien_a2 = &alien_sprite_a2;
         self.sprites.alien_b1 = &alien_sprite_b1;
@@ -132,6 +159,9 @@ impl App {
         self.sprites.alien_c2 = &alien_sprite_c2;
         self.sprites.canon = &canon_sprite;
         self.sprites.bullet = &bullet_sprite;
+        self.sprites.full_block = &full_block_sprite;
+        self.sprites.ok_block = &ok_block_sprite;
+        self.sprites.weak_block = &weak_block_sprite;
 
         let mut events = Events::new(EventSettings::new());
         while let Some(e) = self.window.next() {
@@ -235,6 +265,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
         draw_alien(height, &game.wave, sprites, &c, g);
         draw_canon(height, &game.canon, sprites, &c, g);
         draw_shots(height, &game, sprites, &c, g);
+        draw_bunkers(height, &game.bunkers, sprites, &c, g);
     });
 }
 
@@ -405,6 +436,64 @@ fn draw_shots<G>(
                 transform,
                 g
             );
+    }
+
+}
+
+fn draw_bunkers<G>(
+    height: f64,
+    bunkers: &LinkedList<Bunker>,
+    sprites: &Sprites,
+    c: &Context,
+    g: &mut G
+) where G: Graphics<Texture = G2dTexture>{
+
+    let scale = height as f64 / game::HEIGHT;
+
+    for bunker in bunkers.iter() {
+        for block in bunker.iter() {
+            let transform =
+                c.transform
+                    .zoom(scale)
+                    .trans(
+                        block.position.x - (block.size.width / 2.0),
+                        block.position.y - (block.size.height / 2.0)
+                    );
+
+            match block.state {
+                block::State::Strong => {
+                    Image::new()
+                        .draw(
+                            unsafe { &*sprites.full_block },
+                            &c.draw_state,
+                            transform,
+                            g
+                        );
+                }
+
+                block::State::HalfLife => {
+                    Image::new()
+                        .draw(
+                            unsafe { &*sprites.ok_block },
+                            &c.draw_state,
+                            transform,
+                            g
+                        );
+                }
+
+                block::State::Weak => {
+                    Image::new()
+                        .draw(
+                            unsafe { &*sprites.weak_block },
+                            &c.draw_state,
+                            transform,
+                            g
+                        );
+                }
+
+                block::State::Inactive => {}
+            }
+        }
     }
 
 }
