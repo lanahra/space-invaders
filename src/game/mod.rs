@@ -4,6 +4,7 @@ mod bullet;
 mod position;
 mod size;
 mod collision;
+pub mod wave;
 pub mod entity;
 pub mod player_info;
 
@@ -12,12 +13,8 @@ use self::entity::statical::bunker::Bunker;
 use self::entity::active::canon::Canon;
 use self::position::Position;
 use self::collision::Collision;
-use self::entity::active::wave::Wave;
-use self::entity::active::wave::COLUMNS;
-use self::entity::active::wave::column::ROWS;
 use self::entity::Entity;
 use self::entity::active::Active;
-use self::entity::active::wave::ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE_THE_UNIVERSE_AND_EVERYTHING;
 use std::collections::LinkedList;
 use std::collections
 ::linked_list::Iter;
@@ -37,7 +34,7 @@ pub const WIDTH: f64 = 600.0;
 pub const HEIGHT: f64 = 800.0;
 
 pub struct Game {
-    pub wave: Wave,
+    pub wave: wave::Wave,
     pub canon: Canon,
     pub bullets: Vec<bullet::Bullet>,
     pub bunkers: LinkedList<Bunker>,
@@ -47,7 +44,7 @@ pub struct Game {
 impl Game {
     pub fn new() -> Game {
         Game {
-            wave: Wave::new(),
+            wave: wave::Wave::new(),
             canon: Canon::new(),
             bullets: Vec::new(),
             bunkers: Game::create_bunkers(),

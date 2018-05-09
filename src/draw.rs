@@ -1,9 +1,8 @@
 use game;
 use game::Game;
 use game::entity::Entity;
-use game::entity::active::wave::alien;
-use game::entity::active::wave::red_alien;
 use game::entity::statical::bunker::block;
+use game::wave::alien;
 use assets::Assets;
 use graphics::*;
 use opengl_graphics::GlGraphics;
@@ -17,12 +16,12 @@ impl Draw {
         game: &Game,
         assets: &Assets,
         c: &Context,
-        gl: &mut GlGraphics
-    ) {
+        gl: &mut GlGraphics) {
+
         Draw::draw_field(c, gl);
         Draw::draw_canon(game, assets, c, gl);
         Draw::draw_wave(game, assets, c, gl);
-        Draw::draw_spaceship(game, assets, c, gl);
+//        Draw::draw_spaceship(game, assets, c, gl);
         Draw::draw_bullets(game, assets, c, gl);
         Draw::draw_bunkers(game, assets, c, gl);
         Draw::draw_score(game, assets, c, gl);
@@ -47,7 +46,7 @@ impl Draw {
         c: &Context,
         gl: &mut GlGraphics) {
 
-        for column in game.wave.iter() {
+        for column in &game.wave.aliens {
             for alien in column.iter() {
                 let transform =
                     c.transform
@@ -124,62 +123,50 @@ impl Draw {
                             }
                         }
                     }
-
-                    alien::State::Dead => {
-                        Image::new()
-                            .draw(
-                                &assets.dead,
-                                &c.draw_state,
-                                transform,
-                                gl
-                            );
-                    }
-
-                    _ => {}
                 }
             }
         }
     }
 
-    fn draw_spaceship(
-        game: &Game,
-        assets: &Assets,
-        c: &Context,
-        gl: &mut GlGraphics) {
-
-        let spaceship = &game.wave.red_alien;
-
-        let transform =
-            c.transform
-                .trans(
-                    spaceship.position.x - (spaceship.size.width / 2.0),
-                    spaceship.position.y - (spaceship.size.height / 2.0)
-                );
-
-        match spaceship.state {
-            red_alien::State::Active => {
-                Image::new()
-                    .draw(
-                        &assets.spaceship,
-                        &c.draw_state,
-                        transform,
-                        gl
-                    );
-            }
-
-            red_alien::State::Dead => {
-                Image::new()
-                    .draw(
-                        &assets.dead,
-                        &c.draw_state,
-                        transform,
-                        gl
-                    );
-            }
-
-            _ => {}
-        }
-    }
+//    fn draw_spaceship(
+//        game: &Game,
+//        assets: &Assets,
+//        c: &Context,
+//        gl: &mut GlGraphics) {
+//
+//        let spaceship = &game.wave.red_alien;
+//
+//        let transform =
+//            c.transform
+//                .trans(
+//                    spaceship.position.x - (spaceship.size.width / 2.0),
+//                    spaceship.position.y - (spaceship.size.height / 2.0)
+//                );
+//
+//        match spaceship.state {
+//            red_alien::State::Active => {
+//                Image::new()
+//                    .draw(
+//                        &assets.spaceship,
+//                        &c.draw_state,
+//                        transform,
+//                        gl
+//                    );
+//            }
+//
+//            red_alien::State::Dead => {
+//                Image::new()
+//                    .draw(
+//                        &assets.dead,
+//                        &c.draw_state,
+//                        transform,
+//                        gl
+//                    );
+//            }
+//
+//            _ => {}
+//        }
+//    }
 
     fn draw_bullets(
         game: &Game,

@@ -1,4 +1,3 @@
-pub mod wave;
 pub mod canon;
 
 use game::position::Position;
