@@ -62,6 +62,10 @@ impl Alien {
                 return false;
             }
 
+            State::Dead => {
+                return false;
+            }
+
             _ => {
                 return true;
             }

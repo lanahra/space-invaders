@@ -25,8 +25,10 @@ const RED_ALIEN_POSITION: Position =
         y: 0.11 * HEIGHT,
     };
 
-const COLUMNS: u32 = 11;
-const ROWS: u32 = 5;
+pub const COLUMNS: u32 = 11;
+pub const ROWS: u32 = 5;
+
+const STEP_DECREASE: f64 = 0.1;
 
 const WIDTH_GAP: f64 = 0.06666 * WIDTH;
 const HEIGHT_GAP: f64 = 0.0375 * HEIGHT;
@@ -47,6 +49,7 @@ pub struct Wave {
     pub aliens: LinkedList<Alien>,
     pub red_alien: RedAlien,
     pub step: f64,
+    pub deadly_counter: u32,
     timer: f64,
     state: State,
 }
@@ -57,6 +60,7 @@ impl Wave {
             aliens: Wave::create_aliens(),
             red_alien: RedAlien::new(self::RED_ALIEN_POSITION),
             step: 0.8,
+            deadly_counter: 0,
             timer: 0.0,
             state: State::MovingRight(0),
         }
@@ -90,6 +94,18 @@ impl Wave {
         }
 
         return aliens;
+    }
+
+    pub fn kill_alien(&mut self) {
+        self.deadly_counter+=1;
+    }
+
+    pub fn reset_wave(&mut self) {
+        self.aliens = Wave::create_aliens();
+        self.deadly_counter = 0;
+        self.step -= STEP_DECREASE;
+        self.timer = 0.0;
+        self.state = State::MovingRight(0);
     }
 
     pub fn update(&mut self, dt: f64) {

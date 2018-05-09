@@ -5,12 +5,16 @@ mod size;
 mod collision;
 pub mod wave;
 pub mod bunker;
+mod player_info;
 
+use self::player_info::PlayerInfo;
 use self::bunker::Bunker;
 use self::canon::Canon;
 use self::position::Position;
 use self::collision::Collision;
 use self::wave::Wave;
+use self::wave::ROWS;
+use self::wave::COLUMNS;
 use self::bullet::Shot;
 use std::collections::LinkedList;
 use std::collections::linked_list::Iter;
@@ -28,21 +32,21 @@ pub const WIDTH: f64 = 600.0;
 pub const HEIGHT: f64 = 800.0;
 
 pub struct Game {
-    pub score: i32,
     pub wave: Wave,
     pub canon: Canon,
     pub player_shot: Shot,
-    pub bunkers: LinkedList<Bunker>
+    pub bunkers: LinkedList<Bunker>,
+    player_info: PlayerInfo,
 }
 
 impl Game {
     pub fn new() -> Game {
         Game {
-            score: 0,
             wave: Wave::new(),
             canon: Canon::new(),
             player_shot: Shot::new(Position {x: 0.0, y: 0.0}),
             bunkers: Game::create_bunkers(),
+            player_info: PlayerInfo::new()
         }
     }
 
@@ -60,16 +64,25 @@ impl Game {
                 if self.player_shot.overlaps(&self.wave.red_alien) {
                     self.wave.red_alien.shot_hit();
                     self.player_shot.inactivate_shot();
+                    self.player_info.kill_red_alien();
                 }
             }
+
+            let mut hit_alien: u32 = 0;
             for alien in self.wave.iter_mut() {
                 if alien.is_active() {
                     if self.player_shot.overlaps(alien) {
+                        hit_alien += 1;
                         alien.shot_hit();
                         self.player_shot.inactivate_shot();
                     }
                 }
             }
+            for i in 0..hit_alien {
+                self.wave.kill_alien();
+                self.player_info.kill_alien();
+            }
+
             for mut bunker in self.bunkers.iter_mut() {
                 for mut block in bunker.iter_mut() {
                     if block.is_active() {
@@ -100,8 +113,17 @@ impl Game {
         return bunkers;
     }
 
+    fn check_reset_wave(&mut self) {
+        if self.wave.deadly_counter == ROWS * COLUMNS {
+            self.wave.reset_wave();
+            self.player_info.reset_wave();
+        }
+    }
+
+
     pub fn update(&mut self, dt: f64) {
         self.check_player_shot_collision();
+        self.check_reset_wave();
         self.wave.update(dt);
         self.canon.update(dt);
         self.player_shot.update(dt);
