@@ -1,17 +1,28 @@
+extern crate rand;
+
 pub mod alien;
+pub mod red_alien;
 
 use alien::*;
+use red_alien::*;
 use game::position::Position;
 use game::WIDTH;
 use game::HEIGHT;
 use std::collections::LinkedList;
 use std::collections::linked_list::Iter;
 use std::collections::linked_list::IterMut;
+use self::rand::Rng;
 
 const POSITION: Position =
     Position {
         x: 0.083333 * WIDTH,
-        y: 0.075 * HEIGHT,
+        y: 0.1875 * HEIGHT,
+    };
+
+const RED_ALIEN_POSITION: Position =
+    Position {
+        x: 1.3 * WIDTH,
+        y: 0.11 * HEIGHT,
     };
 
 const COLUMNS: u32 = 11;
@@ -24,6 +35,9 @@ const STEPS: u32 = 14;
 const STEP_DX: f64 = 0.0116666 * WIDTH;
 const STEP_DY: f64 = 0.0125 * HEIGHT;
 
+const RED_ALIEN_PROBABILITY: i64 = 3000;
+const ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE_THE_UNIVERSE_AND_EVERYTHING: i64 = 42; //Aww, it has 85 characters :(
+
 enum State {
     MovingRight(u32),
     MovingLeft(u32),
@@ -31,6 +45,7 @@ enum State {
 
 pub struct Wave {
     pub aliens: LinkedList<Alien>,
+    pub red_alien: RedAlien,
     pub step: f64,
     timer: f64,
     state: State,
@@ -40,6 +55,7 @@ impl Wave {
     pub fn new() -> Wave {
         Wave {
             aliens: Wave::create_aliens(),
+            red_alien: RedAlien::new(self::RED_ALIEN_POSITION),
             step: 0.8,
             timer: 0.0,
             state: State::MovingRight(0),
@@ -78,6 +94,24 @@ impl Wave {
 
     pub fn update(&mut self, dt: f64) {
         self.timer += dt;
+
+        if !self.red_alien.is_active() {
+            let mut rng = rand::thread_rng();
+            let num: i64 = rng.gen_range(0, RED_ALIEN_PROBABILITY);
+
+            if num == ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE_THE_UNIVERSE_AND_EVERYTHING {
+                self.red_alien.move_right();
+                self.red_alien.change_state();
+            }
+            else if num == RED_ALIEN_PROBABILITY-ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE_THE_UNIVERSE_AND_EVERYTHING {
+                self.red_alien.move_left();
+                self.red_alien.change_state();
+            }
+        }
+        else {
+            self.red_alien.update(dt);
+        }
+
 
         if self.timer >= self.step {
             self.timer -= self.step;

@@ -11,6 +11,7 @@ mod sprites;
 use game::bunker::block;
 use game::bunker::Bunker;
 use game::wave::alien;
+use game::wave::red_alien;
 use game::Game;
 use game::canon::Canon;
 use game::bullet::Shot;
@@ -159,6 +160,14 @@ impl App {
             &TextureSettings::new()
         ).unwrap();
 
+        let red_alien_sprite = assets.join("RedInvader.png");
+        let red_alien_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &red_alien_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
         self.sprites.alien_a1 = &alien_sprite_a1;
         self.sprites.alien_a2 = &alien_sprite_a2;
         self.sprites.alien_b1 = &alien_sprite_b1;
@@ -171,6 +180,7 @@ impl App {
         self.sprites.ok_block = &ok_block_sprite;
         self.sprites.weak_block = &weak_block_sprite;
         self.sprites.dead = &dead_sprite;
+        self.sprites.red_alien = &red_alien_sprite;
 
         let mut events = Events::new(EventSettings::new());
         while let Some(e) = self.window.next() {
@@ -272,6 +282,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
         graphics::clear(WHITE, g);
         draw_field(height, &c, g);
         draw_alien(height, &game.wave, sprites, &c, g);
+        draw_red_alien(height, &game.wave, sprites, &c, g);
         draw_canon(height, &game.canon, sprites, &c, g);
         draw_shots(height, &game, sprites, &c, g);
         draw_bunkers(height, &game.bunkers, sprites, &c, g);
@@ -403,6 +414,57 @@ fn draw_alien<G>(
         }
     }
 
+}
+
+fn draw_red_alien<G>(
+    height: f64,
+    wave: &Wave,
+    sprites: &Sprites,
+    c: &Context,
+    g: &mut G
+) where G: Graphics<Texture = G2dTexture>{
+
+    let scale = height as f64 / game::HEIGHT;
+
+    match wave.red_alien.state {
+        red_alien::State::Active => {
+            let transform =
+                c.transform
+                    .zoom(scale)
+                    .trans(
+                        wave.red_alien.position.x - (wave.red_alien.size.width / 2.0),
+                        wave.red_alien.position.y - (wave.red_alien.size.height / 2.0)
+                    );
+
+            Image::new()
+                .draw(
+                    unsafe { &*sprites.red_alien },
+                    &c.draw_state,
+                    transform,
+                    g
+                );
+        }
+
+        red_alien::State::Dead => {
+            let transform =
+                c.transform
+                    .zoom(scale)
+                    .trans(
+                        wave.red_alien.position.x - (wave.red_alien.size.width / 2.0),
+                        wave.red_alien.position.y - (wave.red_alien.size.height / 2.0)
+                    );
+
+            Image::new()
+                .draw(
+                    unsafe { &*sprites.dead },
+                    &c.draw_state,
+                    transform,
+                    g
+                );
+        }
+
+        _ => {}
+    }
 }
 
 fn draw_canon<G>(

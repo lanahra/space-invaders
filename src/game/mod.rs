@@ -56,6 +56,12 @@ impl Game {
 
     pub fn check_player_shot_collision(&mut self) {
         if self.player_shot.is_active() {
+            if self.wave.red_alien.is_active() {
+                if self.player_shot.overlaps(&self.wave.red_alien) {
+                    self.wave.red_alien.shot_hit();
+                    self.player_shot.inactivate_shot();
+                }
+            }
             for alien in self.wave.iter_mut() {
                 if alien.is_active() {
                     if self.player_shot.overlaps(alien) {
