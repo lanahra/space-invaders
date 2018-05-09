@@ -136,6 +136,38 @@ impl App {
             &TextureSettings::new()
         ).unwrap();
 
+        let full_tl_block_sprite = assets.join("FullTLCornerBlock.png");
+        let full_tl_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &full_tl_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let full_tr_block_sprite = assets.join("FullTRCornerBlock.png");
+        let full_tr_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &full_tr_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let full_bl_block_sprite = assets.join("FullBLCornerBlock.png");
+        let full_bl_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &full_bl_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let full_br_block_sprite = assets.join("FullBRCornerBlock.png");
+        let full_br_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &full_br_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
         let ok_block_sprite = assets.join("OkBlock.png");
         let ok_block_sprite: G2dTexture = Texture::from_path(
             &mut self.window.factory,
@@ -144,10 +176,74 @@ impl App {
             &TextureSettings::new()
         ).unwrap();
 
+        let ok_tl_block_sprite = assets.join("OkTLCornerBlock.png");
+        let ok_tl_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &ok_tl_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let ok_tr_block_sprite = assets.join("OkTRCornerBlock.png");
+        let ok_tr_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &ok_tr_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let ok_bl_block_sprite = assets.join("OkBLCornerBlock.png");
+        let ok_bl_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &ok_bl_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let ok_br_block_sprite = assets.join("OkBRCornerBlock.png");
+        let ok_br_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &ok_br_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
         let weak_block_sprite = assets.join("WeakBlock.png");
         let weak_block_sprite: G2dTexture = Texture::from_path(
             &mut self.window.factory,
             &weak_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let weak_tl_block_sprite = assets.join("WeakTLCornerBlock.png");
+        let weak_tl_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &weak_tl_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let weak_tr_block_sprite = assets.join("WeakTRCornerBlock.png");
+        let weak_tr_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &weak_tr_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let weak_bl_block_sprite = assets.join("WeakBLCornerBlock.png");
+        let weak_bl_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &weak_bl_block_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
+        let weak_br_block_sprite = assets.join("WeakBRCornerBlock.png");
+        let weak_br_block_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &weak_br_block_sprite,
             Flip::None,
             &TextureSettings::new()
         ).unwrap();
@@ -177,8 +273,20 @@ impl App {
         self.sprites.canon = &canon_sprite;
         self.sprites.bullet = &bullet_sprite;
         self.sprites.full_block = &full_block_sprite;
+        self.sprites.full_tl_block = &full_tl_block_sprite;
+        self.sprites.full_tr_block = &full_tr_block_sprite;
+        self.sprites.full_bl_block = &full_bl_block_sprite;
+        self.sprites.full_br_block = &full_br_block_sprite;
         self.sprites.ok_block = &ok_block_sprite;
+        self.sprites.ok_tl_block = &ok_tl_block_sprite;
+        self.sprites.ok_tr_block = &ok_tr_block_sprite;
+        self.sprites.ok_bl_block = &ok_bl_block_sprite;
+        self.sprites.ok_br_block = &ok_br_block_sprite;
         self.sprites.weak_block = &weak_block_sprite;
+        self.sprites.weak_tl_block = &weak_tl_block_sprite;
+        self.sprites.weak_tr_block = &weak_tr_block_sprite;
+        self.sprites.weak_bl_block = &weak_bl_block_sprite;
+        self.sprites.weak_br_block = &weak_br_block_sprite;
         self.sprites.dead = &dead_sprite;
         self.sprites.red_alien = &red_alien_sprite;
 
@@ -542,39 +650,186 @@ fn draw_bunkers<G>(
                         block.position.x - (block.size.width / 2.0),
                         block.position.y - (block.size.height / 2.0)
                     );
+            match block.kind {
+                block::Kind::Normal => {
+                    match block.state {
+                        block::State::Strong => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.full_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
 
-            match block.state {
-                block::State::Strong => {
-                    Image::new()
-                        .draw(
-                            unsafe { &*sprites.full_block },
-                            &c.draw_state,
-                            transform,
-                            g
-                        );
+                        block::State::HalfLife => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.ok_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        block::State::Weak => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.weak_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        _ => {}
+                    }
                 }
 
-                block::State::HalfLife => {
-                    Image::new()
-                        .draw(
-                            unsafe { &*sprites.ok_block },
-                            &c.draw_state,
-                            transform,
-                            g
-                        );
+                block::Kind::TopLeftCorner => {
+                    match block.state {
+                        block::State::Strong => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.full_tl_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        block::State::HalfLife => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.ok_tl_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        block::State::Weak => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.weak_tl_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        _ => {}
+                    }
                 }
 
-                block::State::Weak => {
-                    Image::new()
-                        .draw(
-                            unsafe { &*sprites.weak_block },
-                            &c.draw_state,
-                            transform,
-                            g
-                        );
+                block::Kind::TopRightCorner => {
+                    match block.state {
+                        block::State::Strong => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.full_tr_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        block::State::HalfLife => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.ok_tr_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        block::State::Weak => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.weak_tr_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        _ => {}
+                    }
                 }
 
-                _ => {}
+                block::Kind::BottomLeftCorner => {
+                    match block.state {
+                        block::State::Strong => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.full_bl_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        block::State::HalfLife => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.ok_bl_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        block::State::Weak => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.weak_bl_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        _ => {}
+                    }
+                }
+
+                block::Kind::BottomRightCorner => {
+                    match block.state {
+                        block::State::Strong => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.full_br_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        block::State::HalfLife => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.ok_br_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        block::State::Weak => {
+                            Image::new()
+                                .draw(
+                                    unsafe { &*sprites.weak_br_block },
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        _ => {}
+                    }
+                }
             }
         }
     }

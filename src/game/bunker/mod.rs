@@ -36,7 +36,19 @@ impl Bunker {
                     };
 
                 if !(i == ROWS-1 && (j >= 1 && j <= 2)) {
-                    let block = Block::new(position);
+                    let mut block = Block::new(position);
+                    if i == 0 && j == 0 {
+                        block.change_to_top_left();
+                    }
+                    else if i == 0 && j == COLUMNS-1 {
+                        block.change_to_top_right();
+                    }
+                    else if i == 1 && j == 1 {
+                        block.change_to_bottom_right();
+                    }
+                    else if i == 1 && j == 2 {
+                        block.change_to_bottom_left();
+                    }
 
                     blocks.push_back(block);
                 }

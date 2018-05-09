@@ -11,8 +11,17 @@ pub enum State {
     Inactive
 }
 
+pub enum Kind {
+    TopLeftCorner,
+    TopRightCorner,
+    BottomLeftCorner,
+    BottomRightCorner,
+    Normal
+}
+
 pub struct Block {
     pub position: Position,
+    pub kind: Kind,
     pub state: State,
     pub size: Size,
 }
@@ -21,13 +30,30 @@ impl Block {
     pub fn new(position: Position) -> Block {
         Block {
             position,
+            kind: Kind::Normal,
             state: State::Strong,
             size:
             Size {
-                width: 0.025 * WIDTH,
-                height: 0.025 * HEIGHT,
+                width: 0.026666 * WIDTH,
+                height: 0.01875 * HEIGHT,
             },
         }
+    }
+
+    pub fn change_to_top_left(&mut self) {
+        self.kind = Kind::TopLeftCorner;
+    }
+
+    pub fn change_to_top_right(&mut self) {
+        self.kind = Kind::TopRightCorner;
+    }
+
+    pub fn change_to_bottom_left(&mut self) {
+        self.kind = Kind::BottomLeftCorner;
+    }
+
+    pub fn change_to_bottom_right(&mut self) {
+        self.kind = Kind::BottomRightCorner;
     }
 
     pub fn shot_hit(&mut self) {
