@@ -15,6 +15,7 @@ use self::bullet::Shot;
 use std::collections::LinkedList;
 use std::collections::linked_list::Iter;
 
+
 const POSITION_BUNKER: Position =
     Position {
         x: 0.103333 * WIDTH,
@@ -55,9 +56,12 @@ impl Game {
 
     pub fn check_player_shot_collision(&mut self) {
         if self.player_shot.is_active() {
-            for alien in self.wave.iter() {
-                if self.player_shot.overlaps(alien) {
-                    self.player_shot.inactivate_shot();
+            for alien in self.wave.iter_mut() {
+                if alien.is_active() {
+                    if self.player_shot.overlaps(alien) {
+                        alien.shot_hit();
+                        self.player_shot.inactivate_shot();
+                    }
                 }
             }
             for mut bunker in self.bunkers.iter_mut() {

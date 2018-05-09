@@ -13,6 +13,7 @@ pub struct Sprites {
     pub full_block: *const G2dTexture,
     pub ok_block: *const G2dTexture,
     pub weak_block: *const G2dTexture,
+    pub dead: *const G2dTexture,
 }
 
 impl Sprites {
@@ -29,6 +30,7 @@ impl Sprites {
             full_block: ptr::null(),
             ok_block: ptr::null(),
             weak_block: ptr::null(),
+            dead: ptr::null(),
         }
     }
 }

@@ -151,6 +151,14 @@ impl App {
             &TextureSettings::new()
         ).unwrap();
 
+        let dead_sprite = assets.join("Dead.png");
+        let dead_sprite: G2dTexture = Texture::from_path(
+            &mut self.window.factory,
+            &dead_sprite,
+            Flip::None,
+            &TextureSettings::new()
+        ).unwrap();
+
         self.sprites.alien_a1 = &alien_sprite_a1;
         self.sprites.alien_a2 = &alien_sprite_a2;
         self.sprites.alien_b1 = &alien_sprite_b1;
@@ -162,6 +170,7 @@ impl App {
         self.sprites.full_block = &full_block_sprite;
         self.sprites.ok_block = &ok_block_sprite;
         self.sprites.weak_block = &weak_block_sprite;
+        self.sprites.dead = &dead_sprite;
 
         let mut events = Events::new(EventSettings::new());
         while let Some(e) = self.window.next() {
@@ -379,6 +388,18 @@ fn draw_alien<G>(
                     }
                 }
             }
+
+            alien::State::Dead => {
+                Image::new()
+                    .draw(
+                        unsafe{&*sprites.dead},
+                        &c.draw_state,
+                        transform,
+                        g
+                    );
+            }
+
+            _ => {}
         }
     }
 
@@ -491,7 +512,7 @@ fn draw_bunkers<G>(
                         );
                 }
 
-                block::State::Inactive => {}
+                _ => {}
             }
         }
     }

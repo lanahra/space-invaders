@@ -13,6 +13,8 @@ pub enum Kind {
 pub enum State {
     ArmsUp,
     ArmsDown,
+    Dead,
+    Inactive
 }
 
 pub struct Alien {
@@ -45,7 +47,29 @@ impl Alien {
             State::ArmsDown => {
                 self.state = State::ArmsUp;
             }
+
+            State::Dead => {
+                self.state = State::Inactive;
+            }
+
+            _ => {}
         }
+    }
+
+    pub fn is_active(&self) -> bool {
+        match self.state {
+            State::Inactive => {
+                return false;
+            }
+
+            _ => {
+                return true;
+            }
+        }
+    }
+
+    pub fn shot_hit(&mut self) {
+        self.state = State::Dead;
     }
 
     pub fn move_x(&mut self, dx: f64) {
