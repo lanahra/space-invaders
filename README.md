@@ -3,4 +3,4 @@
 ## Running
 
 - [Install Rust](https://www.rust-lang.org/install.html)
-- Run the commabd `cargo run --release`
+- Run the command `cargo run --release`
