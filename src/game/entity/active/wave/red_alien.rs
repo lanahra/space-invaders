@@ -3,6 +3,8 @@ use game::size::Size;
 use game::WIDTH;
 use game::HEIGHT;
 use game::collision::Collision;
+use game::entity::Entity;
+use game::entity::active::Active;
 
 const VELOCITY: f64 = 0.15 * WIDTH;
 
@@ -42,7 +44,45 @@ impl RedAlien {
         }
     }
 
-    pub fn change_state(&mut self) {
+    pub fn move_right(&mut self) {
+        self.movement = Movement::MovingRight;
+        self.position.x = -0.3 * WIDTH;
+    }
+
+    pub fn move_left(&mut self) {
+        self.movement = Movement::MovingLeft;
+        self.position.x = 1.3 * WIDTH;
+    }
+}
+
+impl Collision for RedAlien {
+    fn position(&self) -> &Position {
+        &self.position
+    }
+
+    fn size(&self) -> &Size {
+        &self.size
+    }
+}
+
+impl Entity for RedAlien {
+    fn is_active(&self) -> bool {
+        match self.state {
+            State::Inactive => {
+                return false;
+            }
+
+            _ => {
+                return true;
+            }
+        }
+    }
+
+    fn shot_hit(&mut self) {
+        self.state = State::Dead;
+    }
+
+    fn change_state(&mut self) {
         match self.state {
             State::Dead => {
                 self.state = State::Inactive;
@@ -57,34 +97,14 @@ impl RedAlien {
             }
         }
     }
+}
 
-    pub fn is_active(&self) -> bool {
-        match self.state {
-            State::Inactive => {
-                return false;
-            }
-
-            _ => {
-                return true;
-            }
-        }
+impl Active for RedAlien {
+    fn position(&mut self) -> &mut Position {
+        &mut self.position
     }
 
-    pub fn shot_hit(&mut self) {
-        self.state = State::Dead;
-    }
-
-    pub fn move_right(&mut self) {
-        self.movement = Movement::MovingRight;
-        self.position.x = -0.3 * WIDTH;
-    }
-
-    pub fn move_left(&mut self) {
-        self.movement = Movement::MovingLeft;
-        self.position.x = 1.3 * WIDTH;
-    }
-
-    pub fn update(&mut self, dt: f64) {
+    fn update(&mut self, dt: f64) {
         match self.state {
             State::Active => {
                 match self.movement {
@@ -93,7 +113,7 @@ impl RedAlien {
                             self.change_state();
                         }
                             else {
-                                self.position.x += dt * VELOCITY;
+                                self.move_x(dt * VELOCITY);
                             }
                     }
 
@@ -102,7 +122,7 @@ impl RedAlien {
                             self.change_state();
                         }
                             else {
-                                self.position.x -= dt * VELOCITY;
+                                self.move_x(-dt * VELOCITY);
                             }
                     }
 
@@ -121,15 +141,5 @@ impl RedAlien {
             _ => {}
         }
 
-    }
-}
-
-impl Collision for RedAlien {
-    fn position(&self) -> &Position {
-        &self.position
-    }
-
-    fn size(&self) -> &Size {
-        &self.size
     }
 }

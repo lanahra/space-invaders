@@ -21,7 +21,9 @@ impl PlayerInfo {
     }
 
     pub fn die(&mut self) {
-        self.lifes -= 1;
+        if self.lifes > 0 {
+            self.lifes -= 1;
+        }
         if self.lifes == 0 {
             self.game_over();
         }

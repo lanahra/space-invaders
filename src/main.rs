@@ -8,16 +8,17 @@ extern crate find_folder;
 mod game;
 mod sprites;
 
-use game::bunker::block;
+use game::entity::statical::bunker::block;
 use game::player_info::PlayerInfo;
-use game::bunker::Bunker;
-use game::wave::alien;
-use game::wave::red_alien;
+use game::entity::statical::bunker::Bunker;
+use game::entity::active::wave::alien;
+use game::entity::active::wave::red_alien;
 use game::Game;
-use game::canon::Canon;
-use game::bullet::Shot;
-use game::bullet::ShotType;
-use game::wave::Wave;
+use game::entity::active::canon::Canon;
+use game::entity::active::bullet::Shot;
+use game::entity::active::bullet::Kind;
+use game::entity::active::wave::Wave;
+use game::entity::Entity;
 use sprites::Sprites;
 use glutin_window::GlutinWindow as Window;
 use graphics::*;
@@ -436,95 +437,97 @@ fn draw_alien<G>(
 
     let scale = height as f64 / game::HEIGHT;
 
-    for alien in wave.iter() {
-        let transform =
-            c.transform
-                .zoom(scale)
-                .trans(
-                    alien.position.x - (alien.size.width / 2.0),
-                    alien.position.y - (alien.size.height / 2.0)
-                );
-
-        match alien.state {
-            alien::State::ArmsUp => {
-                match alien.kind {
-                    alien::Kind::Alpha => {
-                        Image::new()
-                            .draw(
-                                unsafe{&*sprites.alien_a1},
-                                &c.draw_state,
-                                transform,
-                                g
-                            );
-                    }
-
-                    alien::Kind::Beta => {
-                        Image::new()
-                            .draw(
-                                unsafe{&*sprites.alien_b1},
-                                &c.draw_state,
-                                transform,
-                                g
-                            );
-                    }
-
-                    alien::Kind::Gamma => {
-                        Image::new()
-                            .draw(
-                                unsafe{&*sprites.alien_c1},
-                                &c.draw_state,
-                                transform,
-                                g
-                            );
-                    }
-                }
-            }
-
-            alien::State::ArmsDown => {
-                match alien.kind {
-                    alien::Kind::Alpha => {
-                        Image::new()
-                            .draw(
-                                unsafe{&*sprites.alien_a2},
-                                &c.draw_state,
-                                transform,
-                                g
-                            );
-                    }
-
-                    alien::Kind::Beta => {
-                        Image::new()
-                            .draw(
-                                unsafe{&*sprites.alien_b2},
-                                &c.draw_state,
-                                transform,
-                                g
-                            );
-                    }
-
-                    alien::Kind::Gamma => {
-                        Image::new()
-                            .draw(
-                                unsafe{&*sprites.alien_c2},
-                                &c.draw_state,
-                                transform,
-                                g
-                            );
-                    }
-                }
-            }
-
-            alien::State::Dead => {
-                Image::new()
-                    .draw(
-                        unsafe{&*sprites.dead},
-                        &c.draw_state,
-                        transform,
-                        g
+    for column in wave.iter() {
+        for alien in column.iter() {
+            let transform =
+                c.transform
+                    .zoom(scale)
+                    .trans(
+                        alien.position.x - (alien.size.width / 2.0),
+                        alien.position.y - (alien.size.height / 2.0)
                     );
-            }
 
-            _ => {}
+            match alien.state {
+                alien::State::ArmsUp => {
+                    match alien.kind {
+                        alien::Kind::Alpha => {
+                            Image::new()
+                                .draw(
+                                    unsafe{&*sprites.alien_a1},
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        alien::Kind::Beta => {
+                            Image::new()
+                                .draw(
+                                    unsafe{&*sprites.alien_b1},
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        alien::Kind::Gamma => {
+                            Image::new()
+                                .draw(
+                                    unsafe{&*sprites.alien_c1},
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+                    }
+                }
+
+                alien::State::ArmsDown => {
+                    match alien.kind {
+                        alien::Kind::Alpha => {
+                            Image::new()
+                                .draw(
+                                    unsafe{&*sprites.alien_a2},
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        alien::Kind::Beta => {
+                            Image::new()
+                                .draw(
+                                    unsafe{&*sprites.alien_b2},
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+
+                        alien::Kind::Gamma => {
+                            Image::new()
+                                .draw(
+                                    unsafe{&*sprites.alien_c2},
+                                    &c.draw_state,
+                                    transform,
+                                    g
+                                );
+                        }
+                    }
+                }
+
+                alien::State::Dead => {
+                    Image::new()
+                        .draw(
+                            unsafe{&*sprites.dead},
+                            &c.draw_state,
+                            transform,
+                            g
+                        );
+                }
+
+                _ => {}
+            }
         }
     }
 
@@ -693,6 +696,25 @@ fn draw_shots<G>(
                 transform,
                 g
             );
+    }
+
+    for shot in game.enemy_shots.iter() {
+        if shot.is_active() {
+            let transform =
+                c.transform
+                    .zoom(scale)
+                    .trans(
+                        shot.position.x - (shot.size.width / 2.0),
+                        shot.position.y - (shot.size.height / 2.0)
+                    );
+            Image::new()
+                .draw(
+                    unsafe{&*sprites.bullet},
+                    &c.draw_state,
+                    transform,
+                    g
+                );
+        }
     }
 
 }
