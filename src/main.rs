@@ -9,6 +9,7 @@ mod game;
 mod sprites;
 
 use game::bunker::block;
+use game::player_info::PlayerInfo;
 use game::bunker::Bunker;
 use game::wave::alien;
 use game::wave::red_alien;
@@ -264,6 +265,10 @@ impl App {
             &TextureSettings::new()
         ).unwrap();
 
+        let ref font = assets.join("ca.ttf");
+        let factory = self.window.factory.clone();
+        let mut glyphs = Glyphs::new(font, factory, TextureSettings::new()).unwrap();
+
         self.sprites.alien_a1 = &alien_sprite_a1;
         self.sprites.alien_a2 = &alien_sprite_a2;
         self.sprites.alien_b1 = &alien_sprite_b1;
@@ -293,7 +298,7 @@ impl App {
         let mut events = Events::new(EventSettings::new());
         while let Some(e) = self.window.next() {
             if let Some(r) = e.render_args() {
-                self.render(&r, &e);
+                self.render(&r, &e, &mut glyphs);
             }
 
             if let Some(u) = e.update_args() {
@@ -306,8 +311,8 @@ impl App {
         }
     }
 
-    fn render(&mut self, args: &RenderArgs, e: &piston_window::Event) {
-        draw(self, &args, e);
+    fn render(&mut self, args: &RenderArgs, e: &piston_window::Event, glyphs: &mut Glyphs) {
+        draw(self, &args, e, glyphs);
     }
 
     fn update(&mut self, args: &UpdateArgs) {
@@ -374,7 +379,7 @@ fn main() {
     app.run();
 }
 
-fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
+fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event, glyphs: &mut Glyphs) {
     const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 
     let scale = args.height as f64 / game::HEIGHT;
@@ -394,6 +399,7 @@ fn draw(app: &mut App, args: &RenderArgs, e: &piston_window::Event) {
         draw_canon(height, &game.canon, sprites, &c, g);
         draw_shots(height, &game, sprites, &c, g);
         draw_bunkers(height, &game.bunkers, sprites, &c, g);
+        draw_score(height, &game.player_info, sprites, &c, g, glyphs);
     });
 }
 
@@ -524,6 +530,62 @@ fn draw_alien<G>(
 
 }
 
+fn draw_score<G>(
+    height: f64,
+    player_info: &PlayerInfo,
+    sprites: &Sprites,
+    c: &Context,
+    g: &mut G,
+    glyphs: &mut Glyphs
+) where G: Graphics<Texture = G2dTexture>{
+
+    let scale = height as f64 / game::HEIGHT;
+
+    let transform = c.transform.zoom(scale).trans(0.05 * game::WIDTH, 0.05 * game::WIDTH);
+    let score_text = String::from("Score");
+    let score_text_print = &score_text[..];
+    // Set a white background
+    text::Text::new_color([255.0, 255.0, 255.0, 1.0], 14).draw(
+        score_text_print,
+        unsafe{glyphs},
+        &c.draw_state,
+        transform, g
+    );
+
+    let transform = c.transform.zoom(scale).trans(0.21 * game::WIDTH, 0.05 * game::WIDTH);
+    let score = String::from(player_info.points.to_string());
+    let score_print = &score[..];
+    // Set a white background
+    text::Text::new_color([0.0, 255.0, 0.0, 1.0], 14).draw(
+        score_print,
+        unsafe{glyphs},
+        &c.draw_state,
+        transform, g
+    );
+
+    let transform = c.transform.zoom(scale).trans(0.78 * game::WIDTH, 0.05 * game::WIDTH);
+    let lifes_text = String::from("Lifes");
+    let lifes_text_print = &lifes_text[..];
+    // Set a white background
+    text::Text::new_color([255.0, 255.0, 255.0, 1.0], 14).draw(
+        lifes_text_print,
+        unsafe{glyphs},
+        &c.draw_state,
+        transform, g
+    );
+
+    let transform = c.transform.zoom(scale).trans(0.93 * game::WIDTH, 0.05 * game::WIDTH);
+    let lifes = String::from(player_info.lifes.to_string());
+    let lifes_print = &lifes[..];
+    // Set a white background
+    text::Text::new_color([0.0, 255.0, 0.0, 1.0], 14).draw(
+        lifes_print,
+        unsafe{glyphs},
+        &c.draw_state,
+        transform, g
+    );
+}
+
 fn draw_red_alien<G>(
     height: f64,
     wave: &Wave,
@@ -599,6 +661,10 @@ fn draw_canon<G>(
                 transform,
                 g
             );
+        rectangle([0.0, 255.0, 0.0, 1.0], // red
+              [0.0, canon.position.y + 0.01 * game::HEIGHT + (canon.size.height / 2.0), game::WIDTH, 1.0],
+                  c.transform,
+                  g);
 }
 
 fn draw_shots<G>(

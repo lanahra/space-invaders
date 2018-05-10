@@ -6,8 +6,8 @@ pub enum State {
 }
 
 pub struct PlayerInfo {
-    points: u32,
-    lifes: u32,
+    pub points: u32,
+    pub lifes: u32,
     state: State,
 }
 

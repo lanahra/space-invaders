@@ -5,7 +5,7 @@ mod size;
 mod collision;
 pub mod wave;
 pub mod bunker;
-mod player_info;
+pub mod player_info;
 
 use self::player_info::PlayerInfo;
 use self::bunker::Bunker;
@@ -36,7 +36,7 @@ pub struct Game {
     pub canon: Canon,
     pub player_shot: Shot,
     pub bunkers: LinkedList<Bunker>,
-    player_info: PlayerInfo,
+    pub player_info: PlayerInfo,
 }
 
 impl Game {
