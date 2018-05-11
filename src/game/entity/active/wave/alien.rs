@@ -3,6 +3,8 @@ use game::size::Size;
 use game::WIDTH;
 use game::HEIGHT;
 use game::collision::Collision;
+use game::entity::Entity;
+use game::entity::active::Active;
 
 pub enum Kind {
     Alpha,
@@ -34,11 +36,45 @@ impl Alien {
                 Size {
                     width: 0.05 * WIDTH,
                     height: 0.025 * HEIGHT,
-                },
+                }
+        }
+    }
+}
+
+impl Collision for Alien {
+    fn position(&self) -> &Position {
+        &self.position
+    }
+
+    fn size(&self) -> &Size {
+        &self.size
+    }
+}
+
+impl Entity for Alien {
+    fn is_active(&self) -> bool {
+        match self.state {
+            State::Inactive => {
+                return false;
+            }
+
+            State::Dead => {
+                return false;
+            }
+
+            _ => {
+                return true;
+            }
         }
     }
 
-    pub fn change_state(&mut self) {
+    fn shot_hit(&mut self) {
+        self.state = State::Dead;
+    }
+
+    
+
+    fn change_state(&mut self) {
         match self.state {
             State::ArmsUp => {
                 self.state = State::ArmsDown;
@@ -55,42 +91,12 @@ impl Alien {
             _ => {}
         }
     }
-
-    pub fn is_active(&self) -> bool {
-        match self.state {
-            State::Inactive => {
-                return false;
-            }
-
-            State::Dead => {
-                return false;
-            }
-
-            _ => {
-                return true;
-            }
-        }
-    }
-
-    pub fn shot_hit(&mut self) {
-        self.state = State::Dead;
-    }
-
-    pub fn move_x(&mut self, dx: f64) {
-        self.position.x += dx;
-    }
-
-    pub fn move_y(&mut self, dy: f64) {
-        self.position.y += dy;
-    }
 }
 
-impl Collision for Alien {
-    fn position(&self) -> &Position {
-        &self.position
+impl Active for Alien {
+    fn position(&mut self) -> &mut Position {
+        &mut self.position
     }
 
-    fn size(&self) -> &Size {
-        &self.size
-    }
+    fn update(&mut self, dt: f64) {}
 }

@@ -3,6 +3,8 @@ use game::HEIGHT;
 use game::position::Position;
 use game::size::Size;
 use game::collision::Collision;
+use game::entity::Entity;
+use game::entity::active::Active;
 
 const VELOCITY: f64 = 0.8333 * WIDTH;
 
@@ -46,24 +48,6 @@ impl Canon {
     pub fn idle(&mut self) {
         self.state = State::Idle;
     }
-
-    pub fn update(&mut self, dt: f64) {
-        match self.state {
-            State::MovingRight => {
-                if self.position.x+self.size.width/2.0 < WIDTH {
-                    self.position.x += dt * VELOCITY;
-                }
-            }
-
-            State::MovingLeft => {
-                if self.position.x-self.size.width/2.0 > 0.0 {
-                    self.position.x -= dt * VELOCITY;
-                }
-            }
-
-            _ => {}
-        }
-    }
 }
 
 impl Collision for Canon {
@@ -73,5 +57,39 @@ impl Collision for Canon {
 
     fn size(&self) -> &Size {
         &self.size
+    }
+}
+
+impl Entity for Canon {
+    fn is_active(&self) -> bool {
+        return true;
+    }
+
+    fn shot_hit(&mut self) {}
+
+    fn change_state(&mut self) {}
+}
+
+impl Active for Canon {
+    fn position(&mut self) -> &mut Position {
+        &mut self.position
+    }
+
+    fn update(&mut self, dt: f64) {
+        match self.state {
+            State::MovingRight => {
+                if self.position.x+self.size.width/2.0 < WIDTH {
+                    self.move_x(dt * VELOCITY);
+                }
+            }
+
+            State::MovingLeft => {
+                if self.position.x-self.size.width/2.0 > 0.0 {
+                    self.move_x(-dt * VELOCITY);
+                }
+            }
+
+            _ => {}
+        }
     }
 }
