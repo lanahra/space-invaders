@@ -43,5 +43,6 @@ impl PlayerInfo {
 
     pub fn reset_wave(&mut self) {
         self.points += 500;
+        self.lifes += 1;
     }
 }

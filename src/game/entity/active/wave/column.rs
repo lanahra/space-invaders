@@ -16,13 +16,13 @@ pub struct Column {
 }
 
 impl Column {
-    pub fn new(position: Position, kind: Kind) -> Column {
+    pub fn new(position: Position) -> Column {
         Column {
-            aliens: Column::create_aliens(position, kind),
+            aliens: Column::create_aliens(position),
         }
     }
 
-    pub fn create_aliens(position_aux: Position, kind: Kind) -> LinkedList<Alien> {
+    pub fn create_aliens(position_aux: Position) -> LinkedList<Alien> {
         let mut aliens: LinkedList<Alien> = LinkedList::new();
 
         for i in 0..ROWS {
@@ -33,16 +33,16 @@ impl Column {
                 };
 
             let alien = 
-                match kind {
-                    Kind::Alpha => 
+                match i {
+                    1 => 
                         Alien::new(position, Kind::Alpha),
                     
                     
-                    Kind::Beta => 
+                    2 | 3 => 
                         Alien::new(position, Kind::Beta),
                     
 
-                    Kind::Gamma => 
+                    _ => 
                         Alien::new(position, Kind::Gamma),
                 };
 

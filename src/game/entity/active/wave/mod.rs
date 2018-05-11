@@ -20,7 +20,7 @@ use self::rand::Rng;
 const POSITION: Position =
     Position {
         x: 0.083333 * WIDTH,
-        y: 0.2875 * HEIGHT,
+        y: 0.3075 * HEIGHT,
     };
 
 const RED_ALIEN_POSITION: Position =
@@ -81,13 +81,13 @@ impl Wave {
             let column =
                 match i {
                     0 =>
-                        Column::new(position, self::Kind::Alpha),
+                        Column::new(position),
 
                     1 | 2 =>
-                        Column::new(position, self::Kind::Beta),
+                        Column::new(position),
 
                     _ =>
-                        Column::new(position, self::Kind::Gamma),
+                        Column::new(position),
                 };
 
             columns.push_back(column);

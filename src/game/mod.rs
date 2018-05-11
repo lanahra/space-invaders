@@ -36,7 +36,7 @@ pub const BUNKERS_GAP: f64 = 0.23 * WIDTH;
 pub const WIDTH: f64 = 600.0;
 pub const HEIGHT: f64 = 800.0;
 
-const SHOT_PROBABILITY: i64 = 300;
+const SHOT_PROBABILITY: i64 = 500;
 
 pub struct Game {
     pub wave: Wave,
@@ -45,6 +45,7 @@ pub struct Game {
     pub enemy_shots: LinkedList<Shot>,
     pub bunkers: LinkedList<Bunker>,
     pub player_info: PlayerInfo,
+    timer: f64,
 }
 
 impl Game {
@@ -55,7 +56,8 @@ impl Game {
             player_shot: Shot::new(Position {x: 0.0, y: 0.0}, Kind::PlayerShot),
             enemy_shots: LinkedList::new(),
             bunkers: Game::create_bunkers(),
-            player_info: PlayerInfo::new()
+            player_info: PlayerInfo::new(),
+            timer: 0.0,
         }
     }
 
@@ -71,9 +73,9 @@ impl Game {
         if self.player_shot.is_active() {
             if self.wave.red_alien.is_active() {
                 if self.player_shot.overlaps(&self.wave.red_alien) {
-                    self.wave.red_alien.shot_hit();
                     self.player_shot.change_state();
                     self.player_info.kill_red_alien();
+                    self.wave.red_alien.shot_hit();
                 }
             }
 
@@ -82,8 +84,9 @@ impl Game {
                 for alien in column.iter_mut() {
                     if alien.is_active() {
                         if self.player_shot.overlaps(alien) {
-                            alien.shot_hit();
+                            hit_alien += 1;
                             self.player_shot.change_state();
+                            alien.shot_hit();
                         }
                     }
                 }
@@ -97,8 +100,8 @@ impl Game {
                 for mut block in bunker.iter_mut() {
                     if block.is_active() {
                         if self.player_shot.overlaps(block) {
-                            block.shot_hit();
                             self.player_shot.change_state();
+                            block.shot_hit();
                         }
                     }
                 }
@@ -111,9 +114,9 @@ impl Game {
             if shot.is_active() {
                 if self.canon.is_active() {
                     if shot.overlaps(&self.canon) {
-                        self.canon.shot_hit();
                         shot.change_state();
                         self.player_info.die();
+                        self.canon.shot_hit();
                     }
                 }
 
@@ -121,8 +124,8 @@ impl Game {
                     for mut block in bunker.iter_mut() {
                         if block.is_active() {
                             if shot.overlaps(block) {
-                                block.shot_hit();
                                 shot.change_state();
+                                block.shot_hit();
                             }
                         }
                     }
@@ -165,15 +168,40 @@ impl Game {
                     let mut stop = false;
                     for alien in column.iter_mut() {
                         if alien.is_active() && !stop {
-                            let mut shot = Shot::new(
-                                Position { 
-                                    x: alien.position.x,
-                                    y: alien.position.y,
-                                },
-                                Kind::EnemyShot,
-                            );
-                            shot.change_state();
-                            self.enemy_shots.push_back(shot);
+                            if self.enemy_shots.is_empty() {
+                                let mut shot = Shot::new(
+                                    Position { 
+                                        x: alien.position.x,
+                                        y: alien.position.y,
+                                    },
+                                    Kind::EnemyShot,
+                                );
+                                shot.change_state();
+                                self.enemy_shots.push_back(shot);
+                            }
+                            else {
+                                let mut changed = false;
+                                for existing_shot in self.enemy_shots.iter_mut() {
+                                    if !existing_shot.is_active() {
+                                        existing_shot.position.x = alien.position.x;
+                                        existing_shot.position.y = alien.position.y;
+                                        existing_shot.kind = Kind::EnemyShot;
+                                        existing_shot.change_state();
+                                        changed = true;
+                                    }
+                                }
+                                if !changed {
+                                    let mut shot = Shot::new(
+                                        Position { 
+                                            x: alien.position.x,
+                                            y: alien.position.y,
+                                        },
+                                        Kind::EnemyShot,
+                                    );
+                                    shot.change_state();
+                                    self.enemy_shots.push_back(shot);
+                                }
+                            }
                             stop = true;
                         }
                     }
