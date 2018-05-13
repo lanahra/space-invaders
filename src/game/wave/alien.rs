@@ -2,8 +2,6 @@ use game;
 use game::position::Position;
 use game::size::Size;
 use game::collision::Collision;
-use game::entity::Entity;
-use game::entity::active::Active;
 
 pub enum Kind {
     Alpha,

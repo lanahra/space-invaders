@@ -10,12 +10,8 @@ mod draw;
 mod game;
 
 use draw::Draw;
-use game::entity::statical::bunker::block;
 use game::player_info::PlayerInfo;
-use game::entity::statical::bunker::Bunker;
 use game::Game;
-use game::entity::active::canon::Canon;
-use game::entity::Entity;
 use graphics::*;
 use opengl_graphics::{ GlGraphics, OpenGL };
 use piston::event_loop::*;

@@ -1,43 +1,29 @@
 extern crate rand;
 
 mod bullet;
+mod canon;
 mod position;
 mod size;
 mod collision;
+pub mod bunkers;
 pub mod wave;
-pub mod entity;
 pub mod player_info;
 
 use self::player_info::PlayerInfo;
-use self::entity::statical::bunker::Bunker;
-use self::entity::active::canon::Canon;
 use self::position::Position;
 use self::collision::Collision;
-use self::entity::Entity;
-use self::entity::active::Active;
 use std::collections::LinkedList;
-use std::collections
-::linked_list::Iter;
 use std::vec::Vec;
 use self::rand::Rng;
 
-
-const POSITION_BUNKER: Position =
-    Position {
-        x: 0.103333 * WIDTH,
-        y: 0.6875 * HEIGHT,
-    };
-
-pub const BUNKERS: u32 = 4;
-pub const BUNKERS_GAP: f64 = 0.23 * WIDTH;
 pub const WIDTH: f64 = 600.0;
 pub const HEIGHT: f64 = 800.0;
 
 pub struct Game {
     pub wave: wave::Wave,
-    pub canon: Canon,
+    pub canon: canon::Canon,
     pub bullets: Vec<bullet::Bullet>,
-    pub bunkers: LinkedList<Bunker>,
+    pub bunkers: bunkers::Bunkers,
     pub player_info: PlayerInfo,
 }
 
@@ -45,9 +31,9 @@ impl Game {
     pub fn new() -> Game {
         Game {
             wave: wave::Wave::new(),
-            canon: Canon::new(),
+            canon: canon::Canon::new(),
             bullets: Vec::new(),
-            bunkers: Game::create_bunkers(),
+            bunkers: bunkers::Bunkers::new(),
             player_info: PlayerInfo::new(),
         }
     }
@@ -74,23 +60,6 @@ impl Game {
         self.bullets.push(bullet);
     }
 
-    fn create_bunkers() -> LinkedList<Bunker> {
-        let mut bunkers: LinkedList<Bunker> = LinkedList::new();
-
-        for i in 0..BUNKERS {
-            let position =
-                Position {
-                    x: self::POSITION_BUNKER.x + (i as f64 * self::BUNKERS_GAP),
-                    y: self::POSITION_BUNKER.y,
-                };
-
-            let bunker = Bunker::new(position);
-            bunkers.push_back(bunker);
-        }
-
-        return bunkers;
-    }
-
     fn update_bullets(&mut self, dt: f64) {
         for bullet in &mut self.bullets {
             bullet.update(dt);
@@ -114,9 +83,19 @@ impl Game {
                 }
             }
 
+            for bunker in &mut self.bunkers.bunkers {
+                for block in &mut bunker.blocks {
+                    if bullet.overlaps(block) {
+                        block.change_state();
+                        return false;
+                    }
+                }
+            }
+
             return true;
         });
 
+        self.bunkers.clear();
         self.wave.clear();
 
         self.bullets = bullets.to_vec();

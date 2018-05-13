@@ -1,25 +1,24 @@
 pub mod alien;
 
 use self::alien::*;
+use game;
 use game::position::Position;
-use game::WIDTH;
-use game::HEIGHT;
 
 const POSITION: Position =
     Position {
-        x: 0.083333 * WIDTH,
-        y: 0.075 * HEIGHT,
+        x: 0.083333 * game::WIDTH,
+        y: 0.075 * game::HEIGHT,
     };
 
 const COLUMNS: u32 = 11;
 const ROWS: u32 = 5;
 
-const WIDTH_GAP: f64 = 0.06666 * WIDTH;
-const HEIGHT_GAP: f64 = 0.0375 * HEIGHT;
+const WIDTH_GAP: f64 = 0.06666 * game::WIDTH;
+const HEIGHT_GAP: f64 = 0.0375 * game::HEIGHT;
 
 const STEPS: u32 = 14;
-const STEP_DX: f64 = 0.0116666 * WIDTH;
-const STEP_DY: f64 = 0.0125 * HEIGHT;
+const STEP_DX: f64 = 0.0116666 * game::WIDTH;
+const STEP_DY: f64 = 0.0125 * game::HEIGHT;
 
 enum State {
     MovingRight(u32),
@@ -90,6 +89,10 @@ impl Wave {
                 }
             });
         }
+
+        self.aliens.retain(|column| {
+            !column.is_empty()
+        });
     }
 
     pub fn update(&mut self, dt: f64) {

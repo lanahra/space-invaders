@@ -1,12 +1,12 @@
-use game::WIDTH;
-use game::HEIGHT;
+use game;
 use game::position::Position;
 use game::size::Size;
 use game::collision::Collision;
-use game::entity::Entity;
-use game::entity::active::Active;
 
-const VELOCITY: f64 = 0.8333 * WIDTH;
+const VELOCITY: f64 = 0.8333 * game::WIDTH;
+
+const RIGHT_BOUND: f64 = 0.95 * game::WIDTH;
+const LEFT_BOUND: f64 = 0.05 * game::WIDTH;
 
 pub enum State {
     Idle,
@@ -25,13 +25,13 @@ impl Canon {
         Canon {
             position:
                 Position {
-                    x: WIDTH / 2.0,
-                    y: 0.875*HEIGHT
+                    x: game::WIDTH / 2.0,
+                    y: 0.875 * game::HEIGHT,
                 },
             size:
                 Size {
-                    width: 0.1*WIDTH,
-                    height: 0.04375*HEIGHT,
+                    width: 60.0,
+                    height: 32.0,
                 },
             state: State::Idle,
         }
@@ -48,6 +48,32 @@ impl Canon {
     pub fn idle(&mut self) {
         self.state = State::Idle;
     }
+
+    pub fn update(&mut self, dt: f64) {
+        match self.state {
+            State::MovingRight => {
+                if self.position.x + self.size.width / 2.0 < RIGHT_BOUND {
+                    self.move_x(dt * VELOCITY);
+                }
+            }
+
+            State::MovingLeft => {
+                if self.position.x - self.size.width / 2.0 > LEFT_BOUND {
+                    self.move_x(-dt * VELOCITY);
+                }
+            }
+
+            _ => {}
+        }
+    }
+
+    pub fn move_x(&mut self, dx: f64) {
+        self.position.x += dx;
+    }
+
+    pub fn move_y(&mut self, dy: f64) {
+        self.position.y += dy;
+    }
 }
 
 impl Collision for Canon {
@@ -57,39 +83,5 @@ impl Collision for Canon {
 
     fn size(&self) -> &Size {
         &self.size
-    }
-}
-
-impl Entity for Canon {
-    fn is_active(&self) -> bool {
-        return true;
-    }
-
-    fn shot_hit(&mut self) {}
-
-    fn change_state(&mut self) {}
-}
-
-impl Active for Canon {
-    fn position(&mut self) -> &mut Position {
-        &mut self.position
-    }
-
-    fn update(&mut self, dt: f64) {
-        match self.state {
-            State::MovingRight => {
-                if self.position.x+self.size.width/2.0 < WIDTH {
-                    self.move_x(dt * VELOCITY);
-                }
-            }
-
-            State::MovingLeft => {
-                if self.position.x-self.size.width/2.0 > 0.0 {
-                    self.move_x(-dt * VELOCITY);
-                }
-            }
-
-            _ => {}
-        }
     }
 }

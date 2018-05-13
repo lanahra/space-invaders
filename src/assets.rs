@@ -13,21 +13,21 @@ pub struct Assets {
     pub dead: Texture,
     pub spaceship: Texture,
     pub bullet: Texture,
-    pub barrier_full: Texture,
-    pub barrier_full_bl: Texture,
-    pub barrier_full_br: Texture,
-    pub barrier_full_tl: Texture,
-    pub barrier_full_tr: Texture,
-    pub barrier_ok: Texture,
-    pub barrier_ok_bl: Texture,
-    pub barrier_ok_br: Texture,
-    pub barrier_ok_tl: Texture,
-    pub barrier_ok_tr: Texture,
-    pub barrier_weak: Texture,
-    pub barrier_weak_bl: Texture,
-    pub barrier_weak_br: Texture,
-    pub barrier_weak_tl: Texture,
-    pub barrier_weak_tr: Texture,
+    pub block_full: Texture,
+    pub block_full_bl: Texture,
+    pub block_full_br: Texture,
+    pub block_full_tl: Texture,
+    pub block_full_tr: Texture,
+    pub block_half: Texture,
+    pub block_half_bl: Texture,
+    pub block_half_br: Texture,
+    pub block_half_tl: Texture,
+    pub block_half_tr: Texture,
+    pub block_weak: Texture,
+    pub block_weak_bl: Texture,
+    pub block_weak_br: Texture,
+    pub block_weak_tl: Texture,
+    pub block_weak_tr: Texture,
 }
 
 impl Assets {
@@ -102,94 +102,94 @@ impl Assets {
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier = images.join("barrier");
+        let bunker = images.join("bunker");
 
-        let barrier_full =
-            match Texture::from_path(barrier.join("full.png"), &settings) {
+        let block_full =
+            match Texture::from_path(bunker.join("full.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_full_bl =
-            match Texture::from_path(barrier.join("full_bl.png"), &settings) {
+        let block_full_bl =
+            match Texture::from_path(bunker.join("full_bl.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_full_br =
-            match Texture::from_path(barrier.join("full_br.png"), &settings) {
+        let block_full_br =
+            match Texture::from_path(bunker.join("full_br.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_full_tl =
-            match Texture::from_path(barrier.join("full_tl.png"), &settings) {
+        let block_full_tl =
+            match Texture::from_path(bunker.join("full_tl.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_full_tr =
-            match Texture::from_path(barrier.join("full_tr.png"), &settings) {
+        let block_full_tr =
+            match Texture::from_path(bunker.join("full_tr.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_ok =
-            match Texture::from_path(barrier.join("ok.png"), &settings) {
+        let block_half =
+            match Texture::from_path(bunker.join("half.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_ok_bl =
-            match Texture::from_path(barrier.join("ok_bl.png"), &settings) {
+        let block_half_bl =
+            match Texture::from_path(bunker.join("half_bl.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_ok_br =
-            match Texture::from_path(barrier.join("ok_br.png"), &settings) {
+        let block_half_br =
+            match Texture::from_path(bunker.join("half_br.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_ok_tl =
-            match Texture::from_path(barrier.join("ok_tl.png"), &settings) {
+        let block_half_tl =
+            match Texture::from_path(bunker.join("half_tl.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_ok_tr =
-            match Texture::from_path(barrier.join("ok_tr.png"), &settings) {
+        let block_half_tr =
+            match Texture::from_path(bunker.join("half_tr.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_weak =
-            match Texture::from_path(barrier.join("weak.png"), &settings) {
+        let block_weak =
+            match Texture::from_path(bunker.join("weak.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_weak_bl =
-            match Texture::from_path(barrier.join("weak_bl.png"), &settings) {
+        let block_weak_bl =
+            match Texture::from_path(bunker.join("weak_bl.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_weak_br =
-            match Texture::from_path(barrier.join("weak_br.png"), &settings) {
+        let block_weak_br =
+            match Texture::from_path(bunker.join("weak_br.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_weak_tl =
-            match Texture::from_path(barrier.join("weak_tl.png"), &settings) {
+        let block_weak_tl =
+            match Texture::from_path(bunker.join("weak_tl.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
 
-        let barrier_weak_tr =
-            match Texture::from_path(barrier.join("weak_tr.png"), &settings) {
+        let block_weak_tr =
+            match Texture::from_path(bunker.join("weak_tr.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
@@ -206,21 +206,21 @@ impl Assets {
             dead,
             spaceship,
             bullet,
-            barrier_full,
-            barrier_full_bl,
-            barrier_full_br,
-            barrier_full_tl,
-            barrier_full_tr,
-            barrier_ok,
-            barrier_ok_bl,
-            barrier_ok_br,
-            barrier_ok_tl,
-            barrier_ok_tr,
-            barrier_weak,
-            barrier_weak_bl,
-            barrier_weak_br,
-            barrier_weak_tl,
-            barrier_weak_tr,
+            block_full,
+            block_full_bl,
+            block_full_br,
+            block_full_tl,
+            block_full_tr,
+            block_half,
+            block_half_bl,
+            block_half_br,
+            block_half_tl,
+            block_half_tr,
+            block_weak,
+            block_weak_bl,
+            block_weak_br,
+            block_weak_tl,
+            block_weak_tr,
         }
     }
 }

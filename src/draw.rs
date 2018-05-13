@@ -1,8 +1,7 @@
 use game;
 use game::Game;
-use game::entity::Entity;
-use game::entity::statical::bunker::block;
 use game::wave::alien;
+use game::bunkers::block;
 use assets::Assets;
 use graphics::*;
 use opengl_graphics::GlGraphics;
@@ -228,8 +227,8 @@ impl Draw {
 
         let bunkers = &game.bunkers;
 
-        for bunker in bunkers.iter() {
-            for block in bunker.iter() {
+        for bunker in &bunkers.bunkers {
+            for block in &bunker.blocks {
                 let transform =
                     c.transform
                         .trans(
@@ -240,20 +239,20 @@ impl Draw {
                 match block.kind {
                     block::Kind::Normal => {
                         match block.state {
-                            block::State::Strong => {
+                            block::State::Full => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_full,
+                                        &assets.block_full,
                                         &c.draw_state,
                                         transform,
                                         gl
                                     );
                             }
 
-                            block::State::HalfLife => {
+                            block::State::Half => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_ok,
+                                        &assets.block_half,
                                         &c.draw_state,
                                         transform,
                                         gl
@@ -263,7 +262,7 @@ impl Draw {
                             block::State::Weak => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_weak,
+                                        &assets.block_weak,
                                         &c.draw_state,
                                         transform,
                                         gl
@@ -274,22 +273,22 @@ impl Draw {
                         }
                     }
 
-                    block::Kind::TopLeftCorner => {
+                    block::Kind::TopLeft => {
                         match block.state {
-                            block::State::Strong => {
+                            block::State::Full => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_full_tl,
+                                        &assets.block_full_tl,
                                         &c.draw_state,
                                         transform,
                                         gl
                                     );
                             }
 
-                            block::State::HalfLife => {
+                            block::State::Half => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_ok_tl,
+                                        &assets.block_half_tl,
                                         &c.draw_state,
                                         transform,
                                         gl
@@ -299,7 +298,7 @@ impl Draw {
                             block::State::Weak => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_weak_tl,
+                                        &assets.block_weak_tl,
                                         &c.draw_state,
                                         transform,
                                         gl
@@ -310,22 +309,22 @@ impl Draw {
                         }
                     }
 
-                    block::Kind::TopRightCorner => {
+                    block::Kind::TopRight => {
                         match block.state {
-                            block::State::Strong => {
+                            block::State::Full => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_full_tr,
+                                        &assets.block_full_tr,
                                         &c.draw_state,
                                         transform,
                                         gl
                                     );
                             }
 
-                            block::State::HalfLife => {
+                            block::State::Half => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_ok_tr,
+                                        &assets.block_half_tr,
                                         &c.draw_state,
                                         transform,
                                         gl
@@ -335,7 +334,7 @@ impl Draw {
                             block::State::Weak => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_weak_tr,
+                                        &assets.block_weak_tr,
                                         &c.draw_state,
                                         transform,
                                         gl
@@ -346,22 +345,22 @@ impl Draw {
                         }
                     }
 
-                    block::Kind::BottomLeftCorner => {
+                    block::Kind::BottomLeft => {
                         match block.state {
-                            block::State::Strong => {
+                            block::State::Full => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_full_bl,
+                                        &assets.block_full_bl,
                                         &c.draw_state,
                                         transform,
                                         gl
                                     );
                             }
 
-                            block::State::HalfLife => {
+                            block::State::Half => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_ok_bl,
+                                        &assets.block_half_bl,
                                         &c.draw_state,
                                         transform,
                                         gl
@@ -371,7 +370,7 @@ impl Draw {
                             block::State::Weak => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_weak_bl,
+                                        &assets.block_weak_bl,
                                         &c.draw_state,
                                         transform,
                                         gl
@@ -382,22 +381,22 @@ impl Draw {
                         }
                     }
 
-                    block::Kind::BottomRightCorner => {
+                    block::Kind::BottomRight => {
                         match block.state {
-                            block::State::Strong => {
+                            block::State::Full => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_full_br,
+                                        &assets.block_full_br,
                                         &c.draw_state,
                                         transform,
                                         gl
                                     );
                             }
 
-                            block::State::HalfLife => {
+                            block::State::Half => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_ok_br,
+                                        &assets.block_half_br,
                                         &c.draw_state,
                                         transform,
                                         gl
@@ -407,7 +406,7 @@ impl Draw {
                             block::State::Weak => {
                                 Image::new()
                                     .draw(
-                                        &assets.barrier_weak_br,
+                                        &assets.block_weak_br,
                                         &c.draw_state,
                                         transform,
                                         gl
