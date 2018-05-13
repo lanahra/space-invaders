@@ -17,8 +17,6 @@ use game::entity::active::wave::alien;
 use game::entity::active::wave::red_alien;
 use game::Game;
 use game::entity::active::canon::Canon;
-use game::entity::active::bullet::Shot;
-use game::entity::active::bullet::Kind;
 use game::entity::active::wave::Wave;
 use game::entity::Entity;
 use graphics::*;
@@ -87,24 +85,18 @@ impl App {
         match args.state {
             ButtonState::Press => {
                 match args.button {
-                    Button::Keyboard(Key::A) => {
+                    Button::Keyboard(Key::A)
+                    | Button::Keyboard(Key::Left) => {
                         game.canon.move_left();
                     }
 
-                    Button::Keyboard(Key::Left) => {
-                        game.canon.move_left();
-                    }
-
-                    Button::Keyboard(Key::D) => {
-                        game.canon.move_right();
-                    }
-
-                    Button::Keyboard(Key::Right) => {
+                    Button::Keyboard(Key::D)
+                    | Button::Keyboard(Key::Right) => {
                         game.canon.move_right();
                     }
 
                     Button::Keyboard(Key::Space) => {
-                        game.create_player_shot();
+                        game.canon_fire();
                     }
 
                     _ => {}
@@ -113,19 +105,13 @@ impl App {
 
             ButtonState::Release => {
                 match args.button {
-                    Button::Keyboard(Key::A) => {
+                    Button::Keyboard(Key::A)
+                    | Button::Keyboard(Key::Left) => {
                         game.canon.idle();
                     }
 
-                    Button::Keyboard(Key::Left) => {
-                        game.canon.idle();
-                    }
-
-                    Button::Keyboard(Key::D) => {
-                        game.canon.idle();
-                    }
-
-                    Button::Keyboard(Key::Right) => {
+                    Button::Keyboard(Key::D)
+                    | Button::Keyboard(Key::Right) => {
                         game.canon.idle();
                     }
 

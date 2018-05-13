@@ -187,14 +187,16 @@ impl Draw {
         c: &Context,
         gl: &mut GlGraphics) {
 
-        let transform =
-            c.transform
-                .trans(
-                    game.player_shot.position.x - (game.player_shot.size.width / 2.0),
-                    game.player_shot.position.y - (game.player_shot.size.height / 2.0)
-                );
+        let bullets = &game.bullets;
 
-        if game.player_shot.is_active() {
+        for bullet in bullets {
+            let transform =
+                c.transform
+                    .trans(
+                        bullet.position.x - (bullet.size.width / 2.0),
+                        bullet.position.y - (bullet.size.height / 2.0)
+                    );
+
             Image::new()
                 .draw(
                     &assets.bullet,
@@ -202,24 +204,6 @@ impl Draw {
                     transform,
                     gl
                 );
-        }
-
-        for shot in game.enemy_shots.iter() {
-            if shot.is_active() {
-                let transform =
-                    c.transform
-                        .trans(
-                            shot.position.x - (shot.size.width / 2.0),
-                            shot.position.y - (shot.size.height / 2.0)
-                        );
-                Image::new()
-                    .draw(
-                        &assets.bullet,
-                        &c.draw_state,
-                        transform,
-                        gl
-                    );
-            }
         }
     }
 
