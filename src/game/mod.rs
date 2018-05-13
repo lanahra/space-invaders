@@ -98,13 +98,28 @@ impl Game {
     }
 
     fn handle_collisions(&mut self) {
-        self.bullets.retain(|b| {
-            if b.position.y >= HEIGHT || b.position.y <= 0.0 {
-                false
-            } else {
-                true
+        let mut bullets = self.bullets.clone();
+
+        bullets.retain(|bullet| {
+            if bullet.position.y >= HEIGHT || bullet.position.y <= 0.0 {
+                return false;
             }
+
+            for column in &mut self.wave.aliens {
+                for alien in column {
+                    if bullet.overlaps(alien) {
+                        alien.kill();
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         });
+
+        self.wave.clear();
+
+        self.bullets = bullets.to_vec();
     }
 
     pub fn update(&mut self, dt: f64) {

@@ -5,11 +5,13 @@ use game::collision::Collision;
 
 const VELOCITY: f64 = 1.3 * game::WIDTH;
 
+#[derive(Clone)]
 pub enum State {
     MovingUp,
     MovingDown,
 }
 
+#[derive(Clone)]
 pub struct Bullet {
     pub position: Position,
     pub size: Size,

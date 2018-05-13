@@ -76,6 +76,22 @@ impl Wave {
         return aliens;
     }
 
+    pub fn clear(&mut self) {
+        for column in &mut self.aliens {
+            column.retain(|alien| {
+                match alien.state {
+                    alien::State::Dead => {
+                        false
+                    }
+
+                    _ => {
+                        true
+                    }
+                }
+            });
+        }
+    }
+
     pub fn update(&mut self, dt: f64) {
         self.timer += dt;
 
