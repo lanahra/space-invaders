@@ -70,10 +70,6 @@ impl Canon {
     pub fn move_x(&mut self, dx: f64) {
         self.position.x += dx;
     }
-
-    pub fn move_y(&mut self, dy: f64) {
-        self.position.y += dy;
-    }
 }
 
 impl Collision for Canon {

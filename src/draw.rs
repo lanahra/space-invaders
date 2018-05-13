@@ -4,8 +4,7 @@ use game::wave::alien;
 use game::bunkers::block;
 use assets::Assets;
 use graphics::*;
-use opengl_graphics::GlGraphics;
-use opengl_graphics::*;
+use opengl_graphics::{GlGraphics, GlyphCache, TextureSettings};
 use std::path::Path;
 
 pub struct Draw;
@@ -23,7 +22,7 @@ impl Draw {
 //        Draw::draw_spaceship(game, assets, c, gl);
         Draw::draw_bullets(game, assets, c, gl);
         Draw::draw_bunkers(game, assets, c, gl);
-        Draw::draw_score(game, assets, c, gl);
+        Draw::draw_info(game, assets, c, gl);
     }
 
     fn draw_field(c: &Context, gl: &mut GlGraphics) {
@@ -421,28 +420,25 @@ impl Draw {
         }
     }
 
-    fn draw_score(
+    fn draw_info(
         game: &Game,
         _assets: & Assets,
         c: &Context,
         gl: &mut GlGraphics) {
 
-        let player_info = &game.player_info;
+        let info = &game.info;
 
         let transform =
             c.transform
                 .trans(0.05 * game::WIDTH, 0.05 * game::WIDTH);
-
-        let score_text = String::from("Score");
-        let score_text_print = &score_text[..];
 
         let path = Path::new("./assets/fonts/ca.ttf");
         let mut font =
             GlyphCache::new(path, (), TextureSettings::new())
                 .unwrap();
 
-        text::Text::new_color([255.0, 255.0, 255.0, 1.0], 14).draw(
-            score_text_print,
+        text::Text::new_color([1.0, 1.0, 1.0, 1.0], 14).draw(
+            "score",
             &mut font,
             &c.draw_state,
             transform,
@@ -453,11 +449,8 @@ impl Draw {
             c.transform
                 .trans(0.21 * game::WIDTH, 0.05 * game::WIDTH);
 
-        let score = String::from(player_info.points.to_string());
-        let score_print = &score[..];
-
-        text::Text::new_color([0.0, 255.0, 0.0, 1.0], 14).draw(
-            score_print,
+        text::Text::new_color([0.0, 1.0, 0.0, 1.0], 14).draw(
+            &info.score.to_string(),
             &mut font,
             &c.draw_state,
             transform,
@@ -468,11 +461,8 @@ impl Draw {
             c.transform
                 .trans(0.78 * game::WIDTH, 0.05 * game::WIDTH);
 
-        let lifes_text = String::from("Lifes");
-        let lifes_text_print = &lifes_text[..];
-
-        text::Text::new_color([255.0, 255.0, 255.0, 1.0], 14).draw(
-            lifes_text_print,
+        text::Text::new_color([1.0, 1.0, 1.0, 1.0], 14).draw(
+            "canons",
             &mut font,
             &c.draw_state,
             transform,
@@ -483,12 +473,8 @@ impl Draw {
             c.transform
                 .trans(0.93 * game::WIDTH, 0.05 * game::WIDTH);
 
-
-        let lifes = String::from(player_info.lifes.to_string());
-        let lifes_print = &lifes[..];
-
-        text::Text::new_color([0.0, 255.0, 0.0, 1.0], 14).draw(
-            lifes_print,
+        text::Text::new_color([0.0, 1.0, 0.0, 1.0], 14).draw(
+            &info.canons.to_string(),
             &mut font,
             &c.draw_state,
             transform,

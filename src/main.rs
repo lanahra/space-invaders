@@ -3,22 +3,19 @@ extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 extern crate piston_window;
-extern crate find_folder;
+extern crate rand;
 
 mod assets;
 mod draw;
 mod game;
 
 use draw::Draw;
-use game::player_info::PlayerInfo;
 use game::Game;
 use graphics::*;
 use opengl_graphics::{ GlGraphics, OpenGL };
 use piston::event_loop::*;
 use piston_window::*;
-use piston::input::*;
 use piston::window::WindowSettings;
-use graphics::rectangle::square;
 
 pub struct App {
     gl: GlGraphics,
@@ -141,8 +138,6 @@ fn draw(app: &mut App, args: &RenderArgs) {
 
     app.gl.draw(viewport, |mut c, gl| {
         graphics::clear(WHITE, gl);
-
-        let scale = height as f64 / game::HEIGHT;
 
         let transform =
             c.transform

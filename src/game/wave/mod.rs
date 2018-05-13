@@ -6,8 +6,8 @@ use game::position::Position;
 
 const POSITION: Position =
     Position {
-        x: 0.083333 * game::WIDTH,
-        y: 0.075 * game::HEIGHT,
+        x: 0.08 * game::WIDTH,
+        y: 0.25 * game::HEIGHT,
     };
 
 const COLUMNS: u32 = 11;
@@ -36,7 +36,7 @@ impl Wave {
     pub fn new() -> Wave {
         Wave {
             aliens: Wave::create_aliens(),
-            step: 1.0,
+            step: 0.55,
             timer: 0.0,
             state: State::MovingRight(0),
         }
@@ -75,6 +75,20 @@ impl Wave {
         return aliens;
     }
 
+    pub fn len(&self) -> usize {
+        let mut len: usize = 0;
+
+        for column in &self.aliens {
+            len += column.len();
+        }
+
+        len
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn clear(&mut self) {
         for column in &mut self.aliens {
             column.retain(|alien| {
@@ -96,6 +110,9 @@ impl Wave {
     }
 
     pub fn update(&mut self, dt: f64) {
+        let ts = self.len() as f64 / (2.0 * ROWS as f64 * COLUMNS as f64);
+        self.step = ts + 0.05;
+
         self.timer += dt;
 
         if self.timer >= self.step {
@@ -105,19 +122,19 @@ impl Wave {
                 State::MovingRight(i) if i < self::STEPS  => {
                     for column in &mut self.aliens {
                         for mut alien in column {
-                            alien.change_state();
                             alien.move_x(STEP_DX);
+                            alien.change_state();
                         }
                     }
 
                     self.state = State::MovingRight(i + 1);
                 }
 
-                State::MovingRight(i) => {
+                State::MovingRight(_i) => {
                     for column in &mut self.aliens {
                         for mut alien in column {
-                            alien.change_state();
                             alien.move_y(STEP_DY);
+                            alien.change_state();
                         }
                     }
 
@@ -127,19 +144,19 @@ impl Wave {
                 State::MovingLeft(i) if i < self::STEPS  => {
                     for column in &mut self.aliens {
                         for mut alien in column {
-                            alien.change_state();
                             alien.move_x(-STEP_DX);
+                            alien.change_state();
                         }
                     }
 
                     self.state = State::MovingLeft(i + 1);
                 }
 
-                State::MovingLeft(i) => {
+                State::MovingLeft(_i) => {
                     for column in &mut self.aliens {
                         for mut alien in column {
-                            alien.change_state();
                             alien.move_y(STEP_DY);
+                            alien.change_state();
                         }
                     }
 

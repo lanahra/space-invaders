@@ -1,5 +1,3 @@
-extern crate rand;
-
 mod bullet;
 mod canon;
 mod position;
@@ -7,24 +5,31 @@ mod size;
 mod collision;
 pub mod bunkers;
 pub mod wave;
-pub mod player_info;
 
-use self::player_info::PlayerInfo;
-use self::position::Position;
 use self::collision::Collision;
-use std::collections::LinkedList;
 use std::vec::Vec;
-use self::rand::Rng;
 
 pub const WIDTH: f64 = 600.0;
 pub const HEIGHT: f64 = 800.0;
+
+pub enum State {
+    Running,
+    Paused,
+    Over,
+}
+
+pub struct Info {
+    pub score: u32,
+    pub canons: u32,
+    pub state: State,
+}
 
 pub struct Game {
     pub wave: wave::Wave,
     pub canon: canon::Canon,
     pub bullets: Vec<bullet::Bullet>,
     pub bunkers: bunkers::Bunkers,
-    pub player_info: PlayerInfo,
+    pub info: Info,
 }
 
 impl Game {
@@ -34,7 +39,12 @@ impl Game {
             canon: canon::Canon::new(),
             bullets: Vec::new(),
             bunkers: bunkers::Bunkers::new(),
-            player_info: PlayerInfo::new(),
+            info:
+                Info {
+                    score: 0,
+                    canons: 3,
+                    state: State::Running,
+                }
         }
     }
 
@@ -77,6 +87,7 @@ impl Game {
             for column in &mut self.wave.aliens {
                 for alien in column {
                     if bullet.overlaps(alien) {
+                        self.info.score += 50;
                         alien.kill();
                         return false;
                     }
@@ -98,13 +109,24 @@ impl Game {
         self.bunkers.clear();
         self.wave.clear();
 
+        if self.wave.is_empty() {
+            self.info.score += 500;
+            self.wave = wave::Wave::new();
+        }
+
         self.bullets = bullets.to_vec();
     }
 
     pub fn update(&mut self, dt: f64) {
-        self.wave.update(dt);
-        self.canon.update(dt);
-        self.update_bullets(dt);
-        self.handle_collisions();
+        match self.info.state {
+            State::Running => {
+                self.wave.update(dt);
+                self.canon.update(dt);
+                self.update_bullets(dt);
+                self.handle_collisions();
+            }
+
+            _ => {}
+        }
     }
 }

@@ -1,4 +1,3 @@
-use game;
 use game::position::Position;
 use game::size::Size;
 use game::collision::Collision;
@@ -30,8 +29,8 @@ impl Alien {
             state: State::ArmsUp,
             size:
                 Size {
-                    width: 0.05 * game::WIDTH,
-                    height: 0.025 * game::HEIGHT,
+                    width: 30.0,
+                    height: 20.0,
                 }
         }
     }
