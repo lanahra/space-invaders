@@ -65,7 +65,7 @@ impl Draw {
                 .unwrap();
 
         text::Text::new_color([1.0, 1.0, 1.0, 1.0], 24).draw(
-            "game over",
+            "game over ",
             &mut font,
             &c.draw_state,
             transform,
@@ -529,7 +529,7 @@ impl Draw {
 
         let transform =
             c.transform
-                .trans(0.78 * game::WIDTH, 0.05 * game::WIDTH);
+                .trans(0.745 * game::WIDTH, 0.05 * game::WIDTH);
 
         text::Text::new_color([1.0, 1.0, 1.0, 1.0], 14).draw(
             "canons",
@@ -544,7 +544,7 @@ impl Draw {
                 .trans(0.93 * game::WIDTH, 0.05 * game::WIDTH);
 
         text::Text::new_color([0.0, 1.0, 0.0, 1.0], 14).draw(
-            &info.canons.to_string(),
+            &format!("{}{}", &info.canons.to_string(), " "),
             &mut font,
             &c.draw_state,
             transform,
