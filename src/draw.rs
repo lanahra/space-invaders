@@ -59,7 +59,7 @@ impl Draw {
             c.transform
                 .trans(0.3 * game::WIDTH, 0.5 * game::WIDTH);
 
-        let path = Path::new("./assets/fonts/ca.ttf");
+        let path = Path::new("./assets/fonts/space_invaders.ttf");
         let mut font =
             GlyphCache::new(path, (), TextureSettings::new())
                 .unwrap();
@@ -502,7 +502,7 @@ impl Draw {
             c.transform
                 .trans(0.05 * game::WIDTH, 0.05 * game::WIDTH);
 
-        let path = Path::new("./assets/fonts/ca.ttf");
+        let path = Path::new("./assets/fonts/space_invaders.ttf");
         let mut font =
             GlyphCache::new(path, (), TextureSettings::new())
                 .unwrap();
