@@ -194,6 +194,7 @@ impl Game {
                     self.info.paused_time = 0.0;
                     self.info.state = State::Running;
                     self.canon = canon::Canon::new();
+                    self.bullets = Vec::new();
                 }
             }
 
