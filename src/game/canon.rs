@@ -12,6 +12,7 @@ pub enum State {
     Idle,
     MovingRight,
     MovingLeft,
+    Dead,
 }
 
 pub struct Canon {
@@ -38,15 +39,33 @@ impl Canon {
     }
 
     pub fn move_right(&mut self) {
-            self.state = State::MovingRight;
+        match self.state {
+            State::Dead => {}
+
+            _ => {
+                self.state = State::MovingRight;
+            }
+        }
     }
 
     pub fn move_left(&mut self) {
-            self.state = State::MovingLeft;
+        match self.state {
+            State::Dead => {}
+
+            _ => {
+                self.state = State::MovingLeft;
+            }
+        }
     }
 
     pub fn idle(&mut self) {
-        self.state = State::Idle;
+        match self.state {
+            State::Dead => {}
+
+            _ => {
+                self.state = State::Idle;
+            }
+        }
     }
 
     pub fn update(&mut self, dt: f64) {

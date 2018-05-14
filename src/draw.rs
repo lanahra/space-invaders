@@ -1,5 +1,6 @@
 use game;
 use game::Game;
+use game::canon;
 use game::wave::alien;
 use game::bunkers::block;
 use assets::Assets;
@@ -17,12 +18,21 @@ impl Draw {
         gl: &mut GlGraphics) {
 
         Draw::draw_field(c, gl);
-        Draw::draw_canon(game, assets, c, gl);
-        Draw::draw_wave(game, assets, c, gl);
-//        Draw::draw_spaceship(game, assets, c, gl);
-        Draw::draw_bullets(game, assets, c, gl);
-        Draw::draw_bunkers(game, assets, c, gl);
-        Draw::draw_info(game, assets, c, gl);
+
+        match game.info.state {
+            game::State::Over => {
+                Draw::draw_game_over(game, assets, c, gl);
+            }
+
+            _ => {
+                Draw::draw_canon(game, assets, c, gl);
+                Draw::draw_wave(game, assets, c, gl);
+                //Draw::draw_spaceship(game, assets, c, gl);
+                Draw::draw_bullets(game, assets, c, gl);
+                Draw::draw_bunkers(game, assets, c, gl);
+                Draw::draw_info(game, assets, c, gl);
+            }
+        }
     }
 
     fn draw_field(c: &Context, gl: &mut GlGraphics) {
@@ -36,6 +46,32 @@ impl Draw {
                 gl
             );
 
+    }
+
+    fn draw_game_over(
+        game: &Game,
+        assets: &Assets,
+        c: &Context,
+        gl: &mut GlGraphics) {
+
+        let info = &game.info;
+
+        let transform =
+            c.transform
+                .trans(0.3 * game::WIDTH, 0.5 * game::WIDTH);
+
+        let path = Path::new("./assets/fonts/ca.ttf");
+        let mut font =
+            GlyphCache::new(path, (), TextureSettings::new())
+                .unwrap();
+
+        text::Text::new_color([1.0, 1.0, 1.0, 1.0], 24).draw(
+            "game over",
+            &mut font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
     }
 
     fn draw_wave(
@@ -209,13 +245,22 @@ impl Draw {
                     canon.position.y - (canon.size.height / 2.0)
                 );
 
-            Image::new()
-                .draw(
-                    &assets.canon,
-                    &c.draw_state,
-                    transform,
-                    gl
-                );
+        match canon.state {
+            canon::State::Idle
+            | canon::State::MovingLeft
+            | canon::State::MovingRight => {
+
+                Image::new()
+                    .draw(
+                        &assets.canon,
+                        &c.draw_state,
+                        transform,
+                        gl
+                    );
+            }
+
+            _ => {}
+        }
     }
 
     fn draw_bunkers(

@@ -1,9 +1,9 @@
 mod bullet;
-mod canon;
 mod position;
 mod size;
 mod collision;
 pub mod bunkers;
+pub mod canon;
 pub mod wave;
 
 use rand::{Rng, thread_rng};
@@ -14,6 +14,7 @@ pub const WIDTH: f64 = 600.0;
 pub const HEIGHT: f64 = 800.0;
 
 const RAND_STEP: f64 = 0.3;
+const PAUSED_STEP: f64 = 2.0;
 
 pub enum State {
     Running,
@@ -25,6 +26,8 @@ pub struct Info {
     pub score: u32,
     pub canons: u32,
     pub state: State,
+    rand_time: f64,
+    paused_time: f64,
 }
 
 pub struct Game {
@@ -33,7 +36,6 @@ pub struct Game {
     pub bullets: Vec<bullet::Bullet>,
     pub bunkers: bunkers::Bunkers,
     pub info: Info,
-    rand_time: f64,
 }
 
 impl Game {
@@ -48,13 +50,15 @@ impl Game {
                     score: 0,
                     canons: 3,
                     state: State::Running,
+                    rand_time: 0.0,
+                    paused_time: 0.0,
                 },
-            rand_time: 0.0,
         }
     }
 
     pub fn canon_fire(&mut self) {
-        let position = self.canon.position.clone();
+        let mut position = self.canon.position.clone();
+        position.y -= self.canon.size.height;
 
         let bullet =
             bullet::Bullet::new(
@@ -82,9 +86,9 @@ impl Game {
         let mut rng = thread_rng();
         let x: f64 = rng.gen();
 
-        self.rand_time += dt;
-        if self.rand_time > RAND_STEP {
-            self.rand_time -= RAND_STEP;
+        self.info.rand_time += dt;
+        if self.info.rand_time > RAND_STEP {
+            self.info.rand_time -= RAND_STEP;
 
             if x > ts + 0.2 {
                 let column: usize =
@@ -140,6 +144,19 @@ impl Game {
                 }
             }
 
+            if bullet.overlaps(&self.canon) {
+                self.info.canons -= 1;
+
+                if self.info.canons == 0 {
+                    self.info.state = State::Over;
+                } else {
+                    self.info.state = State::Paused;
+                }
+
+                self.canon.state = canon::State::Dead;
+                return false;
+            }
+
             return true;
         });
 
@@ -148,6 +165,7 @@ impl Game {
 
         if self.wave.is_empty() {
             self.info.score += 500;
+            self.info.canons += 1;
             self.wave = wave::Wave::new();
         }
 
@@ -164,7 +182,17 @@ impl Game {
                 self.alien_fire(dt);
             }
 
-            _ => {}
+            State::Paused => {
+                self.info.paused_time += dt;
+                if self.info.paused_time > PAUSED_STEP {
+                    self.info.paused_time = 0.0;
+                    self.info.state = State::Running;
+                    self.canon = canon::Canon::new();
+                }
+            }
+
+            State::Over => {
+            }
         }
     }
 }
