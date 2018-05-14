@@ -6,11 +6,14 @@ mod collision;
 pub mod bunkers;
 pub mod wave;
 
+use rand::{Rng, thread_rng};
 use self::collision::Collision;
 use std::vec::Vec;
 
 pub const WIDTH: f64 = 600.0;
 pub const HEIGHT: f64 = 800.0;
+
+const RAND_STEP: f64 = 0.3;
 
 pub enum State {
     Running,
@@ -30,6 +33,7 @@ pub struct Game {
     pub bullets: Vec<bullet::Bullet>,
     pub bunkers: bunkers::Bunkers,
     pub info: Info,
+    rand_time: f64,
 }
 
 impl Game {
@@ -44,7 +48,8 @@ impl Game {
                     score: 0,
                     canons: 3,
                     state: State::Running,
-                }
+                },
+            rand_time: 0.0,
         }
     }
 
@@ -68,6 +73,38 @@ impl Game {
         }
 
         self.bullets.push(bullet);
+    }
+
+    fn alien_fire(&mut self, dt: f64) {
+        let ts =
+            self.wave.len() as f64 / (2 * wave::ROWS * wave::COLUMNS) as f64;
+
+        let mut rng = thread_rng();
+        let x: f64 = rng.gen();
+
+        self.rand_time += dt;
+        if self.rand_time > RAND_STEP {
+            self.rand_time -= RAND_STEP;
+
+            if x > ts + 0.2 {
+                let column: usize =
+                    rng.gen_range(0, self.wave.aliens.len()) as usize;
+
+                if let Some(alien) = self.wave.aliens[column].last() {
+                    let mut position = alien.position.clone();
+                    position.y += alien.size.height;
+
+                    let bullet =
+                        bullet::Bullet::new(
+                            position,
+                            bullet::State::MovingDown
+                        );
+
+                    self.bullets.push(bullet);
+                }
+            }
+        }
+
     }
 
     fn update_bullets(&mut self, dt: f64) {
@@ -124,6 +161,7 @@ impl Game {
                 self.canon.update(dt);
                 self.update_bullets(dt);
                 self.handle_collisions();
+                self.alien_fire(dt);
             }
 
             _ => {}

@@ -10,8 +10,8 @@ const POSITION: Position =
         y: 0.25 * game::HEIGHT,
     };
 
-const COLUMNS: u32 = 11;
-const ROWS: u32 = 5;
+pub const COLUMNS: u32 = 11;
+pub const ROWS: u32 = 5;
 
 const WIDTH_GAP: f64 = 0.06666 * game::WIDTH;
 const HEIGHT_GAP: f64 = 0.0375 * game::HEIGHT;
@@ -110,7 +110,7 @@ impl Wave {
     }
 
     pub fn update(&mut self, dt: f64) {
-        let ts = self.len() as f64 / (2.0 * ROWS as f64 * COLUMNS as f64);
+        let ts = self.len() as f64 / (2 * ROWS * COLUMNS) as f64;
         self.step = ts + 0.05;
 
         self.timer += dt;
