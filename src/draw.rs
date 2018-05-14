@@ -27,6 +27,7 @@ impl Draw {
             _ => {
                 Draw::draw_canon(game, assets, c, gl);
                 Draw::draw_wave(game, assets, c, gl);
+                Draw::draw_explosions(game, assets, c, gl);
                 //Draw::draw_spaceship(game, assets, c, gl);
                 Draw::draw_bullets(game, assets, c, gl);
                 Draw::draw_bunkers(game, assets, c, gl);
@@ -49,12 +50,10 @@ impl Draw {
     }
 
     fn draw_game_over(
-        game: &Game,
-        assets: &Assets,
+        _game: &Game,
+        _assets: &Assets,
         c: &Context,
         gl: &mut GlGraphics) {
-
-        let info = &game.info;
 
         let transform =
             c.transform
@@ -161,6 +160,32 @@ impl Draw {
                     _ => {}
                 }
             }
+        }
+    }
+
+    fn draw_explosions(
+        game: &Game,
+        assets: &Assets,
+        c: &Context,
+        gl: &mut GlGraphics) {
+
+        let explosions = &game.explosions;
+
+        for e in &explosions.explosions {
+            let transform =
+                c.transform
+                    .trans(
+                        e.position.x - (e.size.width / 2.0),
+                        e.position.y - (e.size.height / 2.0)
+                    );
+
+            Image::new()
+                .draw(
+                    &assets.explosion,
+                    &c.draw_state,
+                    transform,
+                    gl
+                );
         }
     }
 

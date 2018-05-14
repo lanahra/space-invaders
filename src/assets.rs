@@ -10,7 +10,7 @@ pub struct Assets {
     pub beta_down: Texture,
     pub gamma_up: Texture,
     pub gamma_down: Texture,
-    pub dead: Texture,
+    pub explosion: Texture,
     pub spaceship: Texture,
     pub bullet: Texture,
     pub block_full: Texture,
@@ -84,8 +84,8 @@ impl Assets {
                 Err(e) => panic!(e.to_string())
             };
 
-        let dead =
-            match Texture::from_path(images.join("dead.png"), &settings) {
+        let explosion =
+            match Texture::from_path(images.join("explosion.png"), &settings) {
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
@@ -203,7 +203,7 @@ impl Assets {
             beta_down,
             gamma_up,
             gamma_down,
-            dead,
+            explosion,
             spaceship,
             bullet,
             block_full,

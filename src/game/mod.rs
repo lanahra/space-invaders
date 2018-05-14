@@ -1,4 +1,5 @@
 mod bullet;
+mod explosions;
 mod position;
 mod size;
 mod collision;
@@ -35,6 +36,7 @@ pub struct Game {
     pub canon: canon::Canon,
     pub bullets: Vec<bullet::Bullet>,
     pub bunkers: bunkers::Bunkers,
+    pub explosions: explosions::Explosions,
     pub info: Info,
 }
 
@@ -45,6 +47,7 @@ impl Game {
             canon: canon::Canon::new(),
             bullets: Vec::new(),
             bunkers: bunkers::Bunkers::new(),
+            explosions: explosions::Explosions::new(),
             info:
                 Info {
                     score: 0,
@@ -129,6 +132,7 @@ impl Game {
                 for alien in column {
                     if bullet.overlaps(alien) {
                         self.info.score += 50;
+                        self.explosions.add(alien.position.clone());
                         alien.kill();
                         return false;
                     }
@@ -177,12 +181,14 @@ impl Game {
             State::Running => {
                 self.wave.update(dt);
                 self.canon.update(dt);
+                self.explosions.update(dt);
                 self.update_bullets(dt);
                 self.handle_collisions();
                 self.alien_fire(dt);
             }
 
             State::Paused => {
+                self.explosions.update(dt);
                 self.info.paused_time += dt;
                 if self.info.paused_time > PAUSED_STEP {
                     self.info.paused_time = 0.0;
