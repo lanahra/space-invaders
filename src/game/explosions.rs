@@ -1,5 +1,4 @@
-use game::position::Position;
-use game::size::Size;
+use game::entity::*;
 use std::vec::Vec;
 
 const LIFETIME: f64 = 0.1;

@@ -1,6 +1,4 @@
-use game::position::Position;
-use game::size::Size;
-use game::collision::Collision;
+use game::entity::*;
 
 pub enum Kind {
     Alpha,
@@ -52,22 +50,17 @@ impl Alien {
     pub fn kill(&mut self) {
         self.state = State::Dead;
     }
+}
 
-    pub fn move_x(&mut self, dx: f64) {
-        self.position.x += dx;
+impl Entity for Alien {
+    fn position(&mut self) -> &mut Position {
+        &mut self.position
     }
 
-    pub fn move_y(&mut self, dy: f64) {
-        self.position.y += dy;
+    fn size(&mut self) -> &mut Size {
+        &mut self.size
     }
 }
 
-impl Collision for Alien {
-    fn position(&self) -> &Position {
-        &self.position
-    }
-
-    fn size(&self) -> &Size {
-        &self.size
-    }
-}
+impl Solid for Alien {}
+impl Kinetic for Alien {}

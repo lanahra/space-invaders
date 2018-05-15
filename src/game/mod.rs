@@ -1,14 +1,12 @@
 mod bullet;
+mod entity;
 mod explosions;
-mod position;
-mod size;
-mod collision;
 pub mod bunkers;
 pub mod canon;
 pub mod wave;
 
+use game::entity::*;
 use rand::{Rng, thread_rng};
-use self::collision::Collision;
 use std::vec::Vec;
 
 pub const WIDTH: f64 = 600.0;
@@ -124,6 +122,8 @@ impl Game {
         let mut bullets = self.bullets.clone();
 
         bullets.retain(|bullet| {
+            let mut bullet = bullet.clone();
+
             if bullet.position.y >= HEIGHT || bullet.position.y <= 0.0 {
                 return false;
             }
@@ -148,7 +148,7 @@ impl Game {
                 }
             }
 
-            if bullet.overlaps(&self.canon) {
+            if bullet.overlaps(&mut self.canon) {
                 self.info.canons -= 1;
 
                 if self.info.canons == 0 {

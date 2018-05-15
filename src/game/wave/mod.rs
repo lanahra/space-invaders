@@ -2,7 +2,7 @@ pub mod alien;
 
 use self::alien::*;
 use game;
-use game::position::Position;
+use game::entity::*;
 
 const POSITION: Position =
     Position {

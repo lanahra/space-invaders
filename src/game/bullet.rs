@@ -1,7 +1,5 @@
 use game;
-use game::position::Position;
-use game::size::Size;
-use game::collision::Collision;
+use game::entity::*;
 
 const VELOCITY: f64 = 1.3 * game::WIDTH;
 
@@ -42,18 +40,17 @@ impl Bullet {
             }
         }
     }
+}
 
-    fn move_y(&mut self, dy: f64) {
-        self.position.y += dy;
+impl Entity for Bullet {
+    fn position(&mut self) -> &mut Position {
+        &mut self.position
+    }
+
+    fn size(&mut self) -> &mut Size {
+        &mut self.size
     }
 }
 
-impl Collision for Bullet {
-    fn position(&self) -> &Position {
-        &self.position
-    }
-
-    fn size(&self) -> &Size {
-        &self.size
-    }
-}
+impl Solid for Bullet {}
+impl Kinetic for Bullet {}

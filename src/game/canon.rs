@@ -1,7 +1,5 @@
 use game;
-use game::position::Position;
-use game::size::Size;
-use game::collision::Collision;
+use game::entity::*;
 
 const VELOCITY: f64 = 0.8333 * game::WIDTH;
 
@@ -85,18 +83,17 @@ impl Canon {
             _ => {}
         }
     }
+}
 
-    pub fn move_x(&mut self, dx: f64) {
-        self.position.x += dx;
+impl Entity for Canon {
+    fn position(&mut self) -> &mut Position {
+        &mut self.position
+    }
+
+    fn size(&mut self) -> &mut Size {
+        &mut self.size
     }
 }
 
-impl Collision for Canon {
-    fn position(&self) -> &Position {
-        &self.position
-    }
-
-    fn size(&self) -> &Size {
-        &self.size
-    }
-}
+impl Solid for Canon {}
+impl Kinetic for Canon {}

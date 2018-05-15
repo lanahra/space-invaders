@@ -1,6 +1,4 @@
-use game::position::Position;
-use game::size::Size;
-use game::collision::Collision;
+use game::entity::*;
 
 pub const WIDTH: f64 = 15.0;
 pub const HEIGHT: f64 = 15.0;
@@ -60,12 +58,14 @@ impl Block {
     }
 }
 
-impl Collision for Block {
-    fn position(&self) -> &Position {
-        &self.position
+impl Entity for Block {
+    fn position(&mut self) -> &mut Position {
+        &mut self.position
     }
 
-    fn size(&self) -> &Size {
-        &self.size
+    fn size(&mut self) -> &mut Size {
+        &mut self.size
     }
 }
+
+impl Solid for Block {}

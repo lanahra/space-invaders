@@ -1,7 +1,7 @@
 pub mod block;
 
 use game;
-use game::position::Position;
+use game::entity::Position;
 use std::vec::Vec;
 use self::block::Block;
 
