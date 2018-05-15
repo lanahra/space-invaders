@@ -134,7 +134,7 @@ fn draw(app: &mut App, args: &RenderArgs) {
         };
 
     let game = &app.game;
-    let assets = &app.assets;
+    let mut assets = &mut app.assets;
 
     app.gl.draw(viewport, |mut c, gl| {
         graphics::clear(WHITE, gl);
@@ -145,6 +145,6 @@ fn draw(app: &mut App, args: &RenderArgs) {
 
         c.transform = transform;
 
-        Draw::draw(&game, &assets, &c, gl);
+        Draw::draw(&game, &mut assets, &c, gl);
     });
 }

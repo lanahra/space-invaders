@@ -5,15 +5,14 @@ use game::wave::alien;
 use game::bunkers::block;
 use assets::Assets;
 use graphics::*;
-use opengl_graphics::{GlGraphics, GlyphCache, TextureSettings};
-use std::path::Path;
+use opengl_graphics::GlGraphics;
 
 pub struct Draw;
 
 impl Draw {
     pub fn draw(
         game: &Game,
-        assets: &Assets,
+        assets: &mut Assets,
         c: &Context,
         gl: &mut GlGraphics) {
 
@@ -51,7 +50,7 @@ impl Draw {
 
     fn draw_game_over(
         _game: &Game,
-        _assets: &Assets,
+        assets: &mut Assets,
         c: &Context,
         gl: &mut GlGraphics) {
 
@@ -59,14 +58,9 @@ impl Draw {
             c.transform
                 .trans(0.3 * game::WIDTH, 0.5 * game::WIDTH);
 
-        let path = Path::new("./assets/fonts/space_invaders.ttf");
-        let mut font =
-            GlyphCache::new(path, (), TextureSettings::new())
-                .unwrap();
-
         text::Text::new_color([1.0, 1.0, 1.0, 1.0], 24).draw(
             "game over ",
-            &mut font,
+            &mut assets.font,
             &c.draw_state,
             transform,
             gl
@@ -492,7 +486,7 @@ impl Draw {
 
     fn draw_info(
         game: &Game,
-        _assets: & Assets,
+        assets: &mut Assets,
         c: &Context,
         gl: &mut GlGraphics) {
 
@@ -502,14 +496,9 @@ impl Draw {
             c.transform
                 .trans(0.05 * game::WIDTH, 0.05 * game::WIDTH);
 
-        let path = Path::new("./assets/fonts/space_invaders.ttf");
-        let mut font =
-            GlyphCache::new(path, (), TextureSettings::new())
-                .unwrap();
-
         text::Text::new_color([1.0, 1.0, 1.0, 1.0], 14).draw(
             "score",
-            &mut font,
+            &mut assets.font,
             &c.draw_state,
             transform,
             gl
@@ -521,7 +510,7 @@ impl Draw {
 
         text::Text::new_color([0.0, 1.0, 0.0, 1.0], 14).draw(
             &info.score.to_string(),
-            &mut font,
+            &mut assets.font,
             &c.draw_state,
             transform,
             gl
@@ -533,7 +522,7 @@ impl Draw {
 
         text::Text::new_color([1.0, 1.0, 1.0, 1.0], 14).draw(
             "canons",
-            &mut font,
+            &mut assets.font,
             &c.draw_state,
             transform,
             gl
@@ -545,7 +534,7 @@ impl Draw {
 
         text::Text::new_color([0.0, 1.0, 0.0, 1.0], 14).draw(
             &format!("{}{}", &info.canons.to_string(), " "),
-            &mut font,
+            &mut assets.font,
             &c.draw_state,
             transform,
             gl

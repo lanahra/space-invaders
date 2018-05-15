@@ -37,7 +37,11 @@ impl Assets {
         let settings = TextureSettings::new();
 
         let font =
-            match GlyphCache::new(fonts.join("ca.ttf"), (), settings.clone()) {
+            match GlyphCache::new(
+                fonts.join("space_invaders.ttf"),
+                (),
+                settings.clone()) {
+
                 Ok(t) => t,
                 Err(e) => panic!(e.to_string())
             };
