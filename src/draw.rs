@@ -1,16 +1,51 @@
+use super::App;
 use game;
 use game::Game;
 use game::canon;
 use game::wave::alien;
 use game::bunkers::block;
+use graphics;
 use assets::Assets;
 use graphics::*;
 use opengl_graphics::GlGraphics;
+use piston_window::*;
 
 pub struct Draw;
 
 impl Draw {
-    pub fn draw(
+    pub fn render(app: &mut App, args: &RenderArgs) {
+        let scale = args.height as f64 / game::HEIGHT;
+        let offset =
+            (args.width / 2) as i32 - (game::WIDTH * scale / 2.0) as i32;
+
+        let width = game::WIDTH * scale;
+        let height = game::HEIGHT * scale;
+
+        let viewport =
+            Viewport {
+                rect: [offset, 0, width as i32, height as i32],
+                window_size: [width as u32, height as u32],
+                draw_size: [width as u32, height as u32],
+            };
+
+        let game = &app.game;
+        let mut assets = &mut app.assets;
+
+        app.gl.draw(viewport, |mut c, gl| {
+            const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
+            graphics::clear(WHITE, gl);
+
+            let transform =
+                c.transform
+                    .zoom(scale);
+
+            c.transform = transform;
+
+            Draw::draw(&game, &mut assets, &c, gl);
+        });
+    }
+
+    fn draw(
         game: &Game,
         assets: &mut Assets,
         c: &Context,
