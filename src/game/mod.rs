@@ -131,7 +131,7 @@ impl Game {
             for column in &mut self.wave.aliens {
                 for alien in column {
                     if bullet.overlaps(alien) {
-                        self.info.score += 50;
+                        self.info.score += 10;
                         self.explosions.add(alien.position.clone());
                         alien.kill();
                         return false;
@@ -168,7 +168,7 @@ impl Game {
         self.wave.clear();
 
         if self.wave.is_empty() {
-            self.info.score += 500;
+            self.info.score += 100;
             self.info.canons += 1;
             self.wave = wave::Wave::new();
         }

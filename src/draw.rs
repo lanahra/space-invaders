@@ -70,7 +70,7 @@ impl Draw {
                 //Draw::draw_spaceship(game, assets, c, gl);
                 Draw::draw_bullets(game, assets, c, gl);
                 Draw::draw_bunkers(game, assets, c, gl);
-                Draw::draw_info(game, assets, c, gl);
+                Draw::draw_score(game, assets, c, gl);
             }
         }
     }
@@ -569,7 +569,7 @@ impl Draw {
         }
     }
 
-    fn draw_info(
+    fn draw_score(
         game: &Game,
         assets: &mut Assets,
         c: &Context,
@@ -579,9 +579,9 @@ impl Draw {
 
         let transform =
             c.transform
-                .trans(0.05 * game::WIDTH, 0.05 * game::WIDTH);
+                .trans(30.0, 38.0);
 
-        text::Text::new_color([1.0, 1.0, 1.0, 1.0], 14).draw(
+        text::Text::new_color(WHITE, 34).draw(
             "score",
             &mut assets.font,
             &c.draw_state,
@@ -591,10 +591,10 @@ impl Draw {
 
         let transform =
             c.transform
-                .trans(0.21 * game::WIDTH, 0.05 * game::WIDTH);
+                .trans(45.0, 100.0);
 
-        text::Text::new_color([0.0, 1.0, 0.0, 1.0], 14).draw(
-            &info.score.to_string(),
+        text::Text::new_color(WHITE, 34).draw(
+            &format!("{:04}", info.score),
             &mut assets.font,
             &c.draw_state,
             transform,
