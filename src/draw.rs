@@ -10,6 +10,10 @@ use graphics::*;
 use opengl_graphics::GlGraphics;
 use piston_window::*;
 
+const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
+const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
+const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
+
 pub struct Draw;
 
 impl Draw {
@@ -32,7 +36,6 @@ impl Draw {
         let mut assets = &mut app.assets;
 
         app.gl.draw(viewport, |mut c, gl| {
-            const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
             graphics::clear(WHITE, gl);
 
             let transform =
@@ -61,6 +64,7 @@ impl Draw {
             _ => {
                 Draw::draw_line(c, gl);
                 Draw::draw_canon(game, assets, c, gl);
+                Draw::draw_canons(game, assets, c, gl);
                 Draw::draw_wave(game, assets, c, gl);
                 Draw::draw_explosions(game, assets, c, gl);
                 //Draw::draw_spaceship(game, assets, c, gl);
@@ -72,8 +76,6 @@ impl Draw {
     }
 
     fn draw_field(c: &Context, gl: &mut GlGraphics) {
-        const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
-
         Rectangle::new(BLACK)
             .draw(
                 [0.0, 0.0, game::WIDTH, game::HEIGHT],
@@ -85,8 +87,6 @@ impl Draw {
     }
 
     fn draw_line(c: &Context, gl: &mut GlGraphics) {
-        const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
-
         let transform =
             c.transform
                 .trans(0.0, 1006.0);
@@ -98,6 +98,39 @@ impl Draw {
                 transform,
                 gl
             );
+    }
+
+    fn draw_canons(
+        game: &Game,
+        assets: &mut Assets,
+        c: &Context,
+        gl: &mut GlGraphics) {
+
+        let transform =
+            c.transform
+                .trans(25.0, 1045.0);
+
+        text::Text::new_color(WHITE, 34).draw(
+            &game.info.canons.to_string(),
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+
+        for i in 0..game.info.canons - 1 {
+            let transform =
+                c.transform
+                    .trans((i * 70) as f64 + 105.0, 1010.0);
+
+            Image::new()
+                .draw(
+                    &assets.canon,
+                    &c.draw_state,
+                    transform,
+                    gl
+                );
+        }
     }
 
     fn draw_game_over(
@@ -562,30 +595,6 @@ impl Draw {
 
         text::Text::new_color([0.0, 1.0, 0.0, 1.0], 14).draw(
             &info.score.to_string(),
-            &mut assets.font,
-            &c.draw_state,
-            transform,
-            gl
-        ).unwrap();
-
-        let transform =
-            c.transform
-                .trans(0.745 * game::WIDTH, 0.05 * game::WIDTH);
-
-        text::Text::new_color([1.0, 1.0, 1.0, 1.0], 14).draw(
-            "canons",
-            &mut assets.font,
-            &c.draw_state,
-            transform,
-            gl
-        ).unwrap();
-
-        let transform =
-            c.transform
-                .trans(0.93 * game::WIDTH, 0.05 * game::WIDTH);
-
-        text::Text::new_color([0.0, 1.0, 0.0, 1.0], 14).draw(
-            &format!("{}{}", &info.canons.to_string(), " "),
             &mut assets.font,
             &c.draw_state,
             transform,
