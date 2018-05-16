@@ -21,15 +21,34 @@ pub struct Alien {
 
 impl Alien {
     pub fn new(position: Position, kind: Kind) -> Alien {
+        let size = match kind {
+            Kind::Alpha => {
+                Size {
+                    width: 35.0,
+                    height: 35.0,
+                }
+            }
+
+            Kind::Beta => {
+                Size {
+                    width: 48.0,
+                    height: 35.0,
+                }
+            }
+
+            Kind::Gamma => {
+                Size {
+                    width: 52.0,
+                    height: 35.0,
+                }
+            }
+        };
+
         Alien {
             position,
             kind,
             state: State::ArmsUp,
-            size:
-                Size {
-                    width: 30.0,
-                    height: 20.0,
-                }
+            size,
         }
     }
 

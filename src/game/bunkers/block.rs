@@ -1,7 +1,7 @@
 use game::entity::*;
 
-pub const WIDTH: f64 = 15.0;
-pub const HEIGHT: f64 = 15.0;
+pub const WIDTH: f64 = 32.0;
+pub const HEIGHT: f64 = 23.0;
 
 pub enum State {
     Full,

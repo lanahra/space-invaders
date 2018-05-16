@@ -29,8 +29,8 @@ impl Canon {
                 },
             size:
                 Size {
-                    width: 60.0,
-                    height: 32.0,
+                    width: 57.0,
+                    height: 35.0,
                 },
             state: State::Idle,
         }

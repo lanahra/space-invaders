@@ -9,8 +9,8 @@ use game::entity::*;
 use rand::{Rng, thread_rng};
 use std::vec::Vec;
 
-pub const WIDTH: f64 = 600.0;
-pub const HEIGHT: f64 = 800.0;
+pub const WIDTH: f64 = 945.0;
+pub const HEIGHT: f64 = 1080.0;
 
 const RAND_STEP: f64 = 0.3;
 const PAUSED_STEP: f64 = 2.0;

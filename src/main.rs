@@ -29,8 +29,9 @@ impl App {
 
         let window = WindowSettings::new(
                 "Space Invaders",
-                [game::WIDTH as u32, game::HEIGHT as u32]
+                [1920, 1080]
             )
+            .fullscreen(true)
             .opengl(opengl)
             .build()
             .unwrap();

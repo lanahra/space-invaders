@@ -1,6 +1,5 @@
 pub mod block;
 
-use game;
 use game::entity::Position;
 use std::vec::Vec;
 use self::block::Block;
@@ -9,13 +8,13 @@ const BUNKERS: u32 = 4;
 
 const POSITION: Position =
     Position {
-        x: 0.1 * game::WIDTH,
-        y: 0.75 * game::HEIGHT,
+        x: 130.0,
+        y: 801.0,
     };
 
 const ROWS: u32 = 3;
-const COLUMNS: u32 = 4;
-const WIDTH_GAP: f64 = 0.25 * game::WIDTH;
+const COLUMNS: u32 = 3;
+const WIDTH_GAP: f64 = 208.0;
 
 pub struct Bunker {
     pub blocks: Vec<Block>,
@@ -39,9 +38,9 @@ impl Bunker {
                         y: position.y + (i as f64 * block::HEIGHT),
                     };
 
-                let pos = (i, j);
+                let pos = (j, i);
                 match pos {
-                    (2, 1) | (2, 2) => {
+                    (1, 2) => {
                         continue;
                     }
 
@@ -51,21 +50,21 @@ impl Bunker {
                         );
                     }
 
-                    (0, 3) => {
+                    (2, 0) => {
                         blocks.push(
                             Block::new(position, block::Kind::TopRight)
                         );
                     }
 
-                    (1, 1) => {
+                    (0, 2) => {
                         blocks.push(
-                            Block::new(position, block::Kind::BottomRight)
+                            Block::new(position, block::Kind::BottomLeft)
                         );
                     }
 
-                    (1, 2) => {
+                    (2, 2) => {
                         blocks.push(
-                            Block::new(position, block::Kind::BottomLeft)
+                            Block::new(position, block::Kind::BottomRight)
                         );
                     }
 
