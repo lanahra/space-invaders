@@ -25,7 +25,7 @@ impl Canon {
             position:
                 Position {
                     x: game::WIDTH / 2.0,
-                    y: 0.875 * game::HEIGHT,
+                    y: 906.0,
                 },
             size:
                 Size {

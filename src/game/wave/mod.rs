@@ -13,12 +13,12 @@ const POSITION: Position =
 pub const COLUMNS: u32 = 11;
 pub const ROWS: u32 = 5;
 
-const WIDTH_GAP: f64 = 0.06666 * game::WIDTH;
-const HEIGHT_GAP: f64 = 0.0375 * game::HEIGHT;
+const WIDTH_GAP: f64 = 70.0;
+const HEIGHT_GAP: f64 = 64.0;
 
-const STEPS: u32 = 14;
-const STEP_DX: f64 = 0.0116666 * game::WIDTH;
-const STEP_DY: f64 = 0.0125 * game::HEIGHT;
+const STEPS: u32 = 10;
+const STEP_DX: f64 = 10.0;
+const STEP_DY: f64 = 10.0;
 
 enum State {
     MovingRight(u32),

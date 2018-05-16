@@ -59,6 +59,7 @@ impl Draw {
             }
 
             _ => {
+                Draw::draw_line(c, gl);
                 Draw::draw_canon(game, assets, c, gl);
                 Draw::draw_wave(game, assets, c, gl);
                 Draw::draw_explosions(game, assets, c, gl);
@@ -81,6 +82,22 @@ impl Draw {
                 gl
             );
 
+    }
+
+    fn draw_line(c: &Context, gl: &mut GlGraphics) {
+        const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
+
+        let transform =
+            c.transform
+                .trans(0.0, 1006.0);
+
+        Rectangle::new(GREEN)
+            .draw(
+                [0.0, 0.0, game::WIDTH, 4.0],
+                &c.draw_state,
+                transform,
+                gl
+            );
     }
 
     fn draw_game_over(
