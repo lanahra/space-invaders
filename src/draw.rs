@@ -134,17 +134,41 @@ impl Draw {
     }
 
     fn draw_game_over(
-        _game: &Game,
+        game: &Game,
         assets: &mut Assets,
         c: &Context,
         gl: &mut GlGraphics) {
 
         let transform =
             c.transform
-                .trans(0.3 * game::WIDTH, 0.5 * game::WIDTH);
+                .trans(305.0, 450.0);
 
-        text::Text::new_color([1.0, 1.0, 1.0, 1.0], 24).draw(
-            "game over ",
+        text::Text::new_color(WHITE, 50).draw(
+            "game over",
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+
+        let transform =
+            c.transform
+                .trans(340.0, 550.0);
+
+        text::Text::new_color(WHITE, 34).draw(
+            "final score",
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+
+        let transform =
+            c.transform
+                .trans(410.0, 600.0);
+
+        text::Text::new_color(WHITE, 34).draw(
+            &format!("{:04}", game.info.score),
             &mut assets.font,
             &c.draw_state,
             transform,
