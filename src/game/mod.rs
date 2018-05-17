@@ -277,6 +277,34 @@ impl Game {
             }
         }
 
+        for column in &mut self.wave.aliens {
+            for alien in column {
+                for bunker in &mut self.bunkers.bunkers {
+                    for block in &mut bunker.blocks {
+                        if alien.overlaps(block) {
+                            block.change_state();
+                        }
+                    }
+                }
+
+                if alien.overlaps(&mut self.canon) {
+                    self.info.canons -= 1;
+
+                    if self.info.canons == 0 {
+                        self.info.state = State::Over;
+                    } else {
+                        self.info.state = State::Paused;
+                    }
+
+                    self.canon.state = canon::State::Dead;
+                }
+
+                if alien.position.y > 986.0 {
+                    self.info.state = State::Over;
+                }
+            }
+        }
+
         self.bullets = bullets.to_vec();
 
         self.bunkers.clear();
