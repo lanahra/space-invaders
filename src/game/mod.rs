@@ -137,7 +137,7 @@ impl Game {
         if self.info.rand_time > RAND_STEP {
             self.info.rand_time -= RAND_STEP;
 
-            if x > ts + 0.2 {
+            if x > ts + 0.3 {
                 let column: usize =
                     rng.gen_range(0, self.wave.aliens.len()) as usize;
 
