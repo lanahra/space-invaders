@@ -285,6 +285,7 @@ impl Game {
         if self.wave.is_empty() {
             self.info.score += 100;
             self.info.canons += 1;
+            self.bullets = Vec::new();
             self.wave = wave::Wave::new();
         }
     }

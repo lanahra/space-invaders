@@ -1,10 +1,10 @@
 use game;
 use game::entity::*;
 
-const VELOCITY: f64 = 0.8333 * game::WIDTH;
+const VELOCITY: f64 = 800.0;
 
-const RIGHT_BOUND: f64 = 0.95 * game::WIDTH;
-const LEFT_BOUND: f64 = 0.05 * game::WIDTH;
+const RIGHT_BOUND: f64 = 900.0;
+const LEFT_BOUND: f64 = 45.0;
 
 pub enum State {
     Idle,

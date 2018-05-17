@@ -1,6 +1,6 @@
 use game::entity::*;
 
-const VELOCITY: f64 = 650.0;
+const VELOCITY: f64 = 700.0;
 
 #[derive(Clone)]
 pub enum State {
