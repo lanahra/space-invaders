@@ -168,7 +168,7 @@ impl Game {
         bullets.retain(|bullet| {
             let mut bullet = bullet.clone();
 
-            if bullet.position.y >= HEIGHT || bullet.position.y <= 0.0 {
+            if bullet.position.y >= 1006.0 || bullet.position.y <= 0.0 {
                 return false;
             }
 
