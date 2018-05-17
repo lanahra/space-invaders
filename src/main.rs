@@ -47,6 +47,14 @@ impl App {
     fn run(&mut self) {
         let mut events = Events::new(EventSettings::new());
         while let Some(e) = events.next(&mut self.window) {
+            match self.game.info.state {
+                game::State::Exit => {
+                    break;
+                }
+
+                _ => {}
+            }
+
             if let Some(r) = e.render_args() {
                 self.render(&r);
             }
@@ -66,43 +74,79 @@ impl App {
     }
 
     fn update(&mut self, args: &UpdateArgs) {
-        self.game.update(args.dt);
+        match self.game.info.state {
+            game::State::Restart => {
+                self.game = Game::new();
+            }
+
+            _ => {
+                self.game.update(args.dt);
+            }
+        }
     }
 
     fn input(&mut self, args: &ButtonArgs) {
         let game = &mut self.game;
 
+
         match args.state {
             ButtonState::Press => {
-                match args.button {
-                    Button::Keyboard(Key::A)
-                    | Button::Keyboard(Key::Left) => {
-                        game.canon.move_left();
+                match game.info.state {
+                    game::State::Running => {
+                        match args.button {
+                            Button::Keyboard(Key::A)
+                            | Button::Keyboard(Key::Left) => {
+                                game.canon.move_left();
+                            }
+
+                            Button::Keyboard(Key::D)
+                            | Button::Keyboard(Key::Right) => {
+                                game.canon.move_right();
+                            }
+
+                            Button::Keyboard(Key::Space) => {
+                                game.canon_fire();
+                            }
+
+                            _ => {}
+                        }
                     }
 
-                    Button::Keyboard(Key::D)
-                    | Button::Keyboard(Key::Right) => {
-                        game.canon.move_right();
-                    }
+                    _ => {
+                        match args.button {
+                            Button::Keyboard(Key::W)
+                            | Button::Keyboard(Key::Up)
+                            | Button::Keyboard(Key::S)
+                            | Button::Keyboard(Key::Down) => {
+                                game.change_selection();
+                            }
 
-                    Button::Keyboard(Key::Space) => {
-                        game.canon_fire();
-                    }
+                            Button::Keyboard(Key::Return) => {
+                                game.make_selection();
+                            }
 
-                    _ => {}
+                            _ => {}
+                        }
+                    }
                 }
             }
 
             ButtonState::Release => {
-                match args.button {
-                    Button::Keyboard(Key::A)
-                    | Button::Keyboard(Key::Left) => {
-                        game.canon.idle();
-                    }
+                match game.info.state {
+                    game::State::Running => {
+                        match args.button {
+                            Button::Keyboard(Key::A)
+                            | Button::Keyboard(Key::Left) => {
+                                game.canon.idle();
+                            }
 
-                    Button::Keyboard(Key::D)
-                    | Button::Keyboard(Key::Right) => {
-                        game.canon.idle();
+                            Button::Keyboard(Key::D)
+                            | Button::Keyboard(Key::Right) => {
+                                game.canon.idle();
+                            }
+
+                            _ => {}
+                        }
                     }
 
                     _ => {}

@@ -57,11 +57,8 @@ impl Draw {
         Draw::draw_field(c, gl);
 
         match game.info.state {
-            game::State::Over => {
-                Draw::draw_game_over(game, assets, c, gl);
-            }
-
-            _ => {
+            game::State::Running
+            | game::State::Paused => {
                 Draw::draw_line(c, gl);
                 Draw::draw_canon(game, assets, c, gl);
                 Draw::draw_canons(game, assets, c, gl);
@@ -72,6 +69,16 @@ impl Draw {
                 Draw::draw_bunkers(game, assets, c, gl);
                 Draw::draw_score(game, assets, c, gl);
             }
+
+            game::State::Over => {
+                Draw::draw_game_over(game, assets, c, gl);
+            }
+
+            game::State::Menu(ref _s) => {
+                Draw::draw_menu(game, assets, c, gl);
+            }
+
+            _ => {}
         }
     }
 
@@ -603,6 +610,73 @@ impl Draw {
 
         text::Text::new_color(WHITE, 34).draw(
             &format!("{:04}", info.score),
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+    }
+
+    fn draw_menu(
+        game: &Game,
+        assets: &mut Assets,
+        c: &Context,
+        gl: &mut GlGraphics) {
+
+        let transform =
+            c.transform
+                .trans(150.0, 400.0);
+
+        text::Text::new_color(WHITE, 50).draw(
+            "space invaders",
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+
+        let transform =
+            c.transform
+                .trans(150.0, 600.0);
+
+        text::Text::new_color(WHITE, 34).draw(
+            "new game",
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+
+        let transform =
+            c.transform
+                .trans(150.0, 650.0);
+
+        text::Text::new_color(WHITE, 34).draw(
+            "exit",
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+
+        let transform = match game.info.state {
+            game::State::Menu(game::Selection::NewGame) => {
+                c.transform
+                    .trans(120.0, 600.0)
+            }
+
+            game::State::Menu(game::Selection::Exit) => {
+                c.transform
+                    .trans(120.0, 650.0)
+            }
+
+            _ => {
+                c.transform
+            }
+        };
+
+        text::Text::new_color(WHITE, 34).draw(
+            ">",
             &mut assets.font,
             &c.draw_state,
             transform,

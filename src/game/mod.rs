@@ -17,10 +17,18 @@ const RAND_STEP: f64 = 0.3;
 const PAUSED_STEP: f64 = 2.0;
 const MYSTERY_STEP: f64 = 10.0;
 
+pub enum Selection {
+    NewGame,
+    Exit,
+}
+
 pub enum State {
+    Menu(Selection),
     Running,
     Paused,
     Over,
+    Restart,
+    Exit,
 }
 
 pub struct Info {
@@ -55,11 +63,43 @@ impl Game {
                 Info {
                     score: 0,
                     canons: 3,
-                    state: State::Running,
+                    state: State::Menu(Selection::NewGame),
                     rand_time: 0.0,
                     paused_time: 0.0,
                     mystery_time: 0.0,
                 },
+        }
+    }
+
+    pub fn change_selection(&mut self) {
+        match self.info.state {
+            State::Menu(Selection::NewGame) => {
+                self.info.state = State::Menu(Selection::Exit);
+            }
+
+            State::Menu(Selection::Exit) => {
+                self.info.state = State::Menu(Selection::NewGame);
+            }
+
+            _ => {}
+        }
+    }
+
+    pub fn make_selection(&mut self) {
+        match self.info.state {
+            State::Menu(Selection::NewGame) => {
+                self.info.state = State::Running;
+            }
+
+            State::Menu(Selection::Exit) => {
+                self.info.state = State::Exit;
+            }
+
+            State::Over => {
+                self.info.state = State::Restart;
+            }
+
+            _ => {}
         }
     }
 
@@ -272,8 +312,7 @@ impl Game {
                 }
             }
 
-            State::Over => {
-            }
+            _ => {}
         }
     }
 }
