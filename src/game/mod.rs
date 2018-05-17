@@ -1,6 +1,7 @@
 mod bullet;
 mod entity;
 mod explosions;
+mod spaceship;
 pub mod bunkers;
 pub mod canon;
 pub mod wave;
@@ -14,6 +15,7 @@ pub const HEIGHT: f64 = 1080.0;
 
 const RAND_STEP: f64 = 0.3;
 const PAUSED_STEP: f64 = 2.0;
+const MYSTERY_STEP: f64 = 10.0;
 
 pub enum State {
     Running,
@@ -27,10 +29,12 @@ pub struct Info {
     pub state: State,
     rand_time: f64,
     paused_time: f64,
+    mystery_time: f64,
 }
 
 pub struct Game {
     pub wave: wave::Wave,
+    pub spaceship: Option<spaceship::Spaceship>,
     pub canon: canon::Canon,
     pub bullets: Vec<bullet::Bullet>,
     pub bunkers: bunkers::Bunkers,
@@ -42,6 +46,7 @@ impl Game {
     pub fn new() -> Game {
         Game {
             wave: wave::Wave::new(),
+            spaceship: None,
             canon: canon::Canon::new(),
             bullets: Vec::new(),
             bunkers: bunkers::Bunkers::new(),
@@ -53,6 +58,7 @@ impl Game {
                     state: State::Running,
                     rand_time: 0.0,
                     paused_time: 0.0,
+                    mystery_time: 0.0,
                 },
         }
     }
@@ -118,6 +124,44 @@ impl Game {
         }
     }
 
+    fn handle_spaceship(&mut self, dt: f64) {
+        if let Some(ref mut spaceship) = self.spaceship {
+            spaceship.update(dt);
+        } else {
+            self.info.mystery_time += dt;
+
+            if self.info.mystery_time > MYSTERY_STEP {
+                self.info.mystery_time -= MYSTERY_STEP;
+
+                let mut rng = thread_rng();
+                let x: f64 = rng.gen();
+
+                let position =
+                    if x > 0.5 {
+                        Position {
+                            x: WIDTH,
+                            y: 200.0,
+                        }
+                    } else {
+                        Position {
+                            x: 0.0,
+                            y: 200.0,
+                        }
+                    };
+
+                let state =
+                    if x > 0.5 {
+                        spaceship::State::MovingLeft
+                    } else {
+                        spaceship::State::MovingRight
+                    };
+
+                self.spaceship =
+                    Some(spaceship::Spaceship::new(position, state));
+            }
+        }
+    }
+
     fn handle_collisions(&mut self) {
         let mut bullets = self.bullets.clone();
 
@@ -148,6 +192,15 @@ impl Game {
                 }
             }
 
+            if let Some(ref mut spaceship) = self.spaceship.clone() {
+                if bullet.overlaps(spaceship) {
+                    self.info.score += 100;
+                    self.explosions.add(spaceship.position.clone());
+                    self.spaceship = None;
+                    return false;
+                }
+            }
+
             if bullet.overlaps(&mut self.canon) {
                 self.info.canons -= 1;
 
@@ -163,6 +216,13 @@ impl Game {
 
             return true;
         });
+
+        if let Some(ref spaceship) = self.spaceship.clone() {
+            let position = &spaceship.position;
+            if position.x < 0.0 || position.x > WIDTH {
+                self.spaceship = None;
+            }
+        }
 
         self.bunkers.clear();
         self.wave.clear();
@@ -183,6 +243,7 @@ impl Game {
                 self.canon.update(dt);
                 self.explosions.update(dt);
                 self.update_bullets(dt);
+                self.handle_spaceship(dt);
                 self.handle_collisions();
                 self.alien_fire(dt);
             }

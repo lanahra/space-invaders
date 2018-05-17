@@ -67,7 +67,7 @@ impl Draw {
                 Draw::draw_canons(game, assets, c, gl);
                 Draw::draw_wave(game, assets, c, gl);
                 Draw::draw_explosions(game, assets, c, gl);
-                //Draw::draw_spaceship(game, assets, c, gl);
+                Draw::draw_spaceship(game, assets, c, gl);
                 Draw::draw_bullets(game, assets, c, gl);
                 Draw::draw_bunkers(game, assets, c, gl);
                 Draw::draw_score(game, assets, c, gl);
@@ -292,45 +292,29 @@ impl Draw {
         }
     }
 
-//    fn draw_spaceship(
-//        game: &Game,
-//        assets: &Assets,
-//        c: &Context,
-//        gl: &mut GlGraphics) {
-//
-//        let spaceship = &game.wave.red_alien;
-//
-//        let transform =
-//            c.transform
-//                .trans(
-//                    spaceship.position.x - (spaceship.size.width / 2.0),
-//                    spaceship.position.y - (spaceship.size.height / 2.0)
-//                );
-//
-//        match spaceship.state {
-//            red_alien::State::Active => {
-//                Image::new()
-//                    .draw(
-//                        &assets.spaceship,
-//                        &c.draw_state,
-//                        transform,
-//                        gl
-//                    );
-//            }
-//
-//            red_alien::State::Dead => {
-//                Image::new()
-//                    .draw(
-//                        &assets.dead,
-//                        &c.draw_state,
-//                        transform,
-//                        gl
-//                    );
-//            }
-//
-//            _ => {}
-//        }
-//    }
+    fn draw_spaceship(
+        game: &Game,
+        assets: &Assets,
+        c: &Context,
+        gl: &mut GlGraphics) {
+
+        if let Some(ref spaceship) = game.spaceship {
+            let transform =
+                c.transform
+                    .trans(
+                        spaceship.position.x - (spaceship.size.width / 2.0),
+                        spaceship.position.y - (spaceship.size.height / 2.0)
+                    );
+
+            Image::new()
+                .draw(
+                    &assets.spaceship,
+                    &c.draw_state,
+                    transform,
+                    gl
+                );
+        }
+    }
 
     fn draw_bullets(
         game: &Game,
