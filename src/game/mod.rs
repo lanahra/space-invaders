@@ -175,7 +175,20 @@ impl Game {
             for column in &mut self.wave.aliens {
                 for alien in column {
                     if bullet.overlaps(alien) {
-                        self.info.score += 10;
+                        match alien.kind {
+                            wave::alien::Kind::Alpha => {
+                                self.info.score += 30;
+                            }
+
+                            wave::alien::Kind::Beta => {
+                                self.info.score += 20;
+                            }
+
+                            wave::alien::Kind::Gamma => {
+                                self.info.score += 10;
+                            }
+                        }
+
                         self.explosions.add(alien.position.clone());
                         alien.kill();
                         return false;
