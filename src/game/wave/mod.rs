@@ -1,13 +1,12 @@
 pub mod alien;
 
 use self::alien::*;
-use game;
 use game::entity::*;
 
 const POSITION: Position =
     Position {
-        x: 0.08 * game::WIDTH,
-        y: 0.25 * game::HEIGHT,
+        x: 75.0,
+        y: 270.0,
     };
 
 pub const COLUMNS: u32 = 11;
@@ -16,13 +15,14 @@ pub const ROWS: u32 = 5;
 const WIDTH_GAP: f64 = 70.0;
 const HEIGHT_GAP: f64 = 64.0;
 
-const STEPS: u32 = 10;
 const STEP_DX: f64 = 10.0;
 const STEP_DY: f64 = 10.0;
 
 enum State {
-    MovingRight(u32),
-    MovingLeft(u32),
+    MovingRight,
+    MovingLeft,
+    MovingDownLeft,
+    MovingDownRight,
 }
 
 pub struct Wave {
@@ -38,7 +38,7 @@ impl Wave {
             aliens: Wave::create_aliens(),
             step: 0.55,
             timer: 0.0,
-            state: State::MovingRight(0),
+            state: State::MovingRight,
         }
     }
 
@@ -119,7 +119,7 @@ impl Wave {
             self.timer -= self.step;
 
             match self.state {
-                State::MovingRight(i) if i < self::STEPS  => {
+                State::MovingRight => {
                     for column in &mut self.aliens {
                         for mut alien in column {
                             alien.move_x(STEP_DX);
@@ -127,21 +127,16 @@ impl Wave {
                         }
                     }
 
-                    self.state = State::MovingRight(i + 1);
-                }
-
-                State::MovingRight(_i) => {
-                    for column in &mut self.aliens {
-                        for mut alien in column {
-                            alien.move_y(STEP_DY);
-                            alien.change_state();
+                    if let Some(column) = self.aliens.last() {
+                        if let Some(alien) = column.last() {
+                            if alien.position.x > 865.0 {
+                                self.state = State::MovingDownLeft;
+                            }
                         }
                     }
-
-                    self.state = State::MovingLeft(0);
                 }
 
-                State::MovingLeft(i) if i < self::STEPS  => {
+                State::MovingLeft => {
                     for column in &mut self.aliens {
                         for mut alien in column {
                             alien.move_x(-STEP_DX);
@@ -149,10 +144,16 @@ impl Wave {
                         }
                     }
 
-                    self.state = State::MovingLeft(i + 1);
+                    if let Some(column) = self.aliens.first() {
+                        if let Some(alien) = column.first() {
+                            if alien.position.x < 80.0 {
+                                self.state = State::MovingDownRight;
+                            }
+                        }
+                    }
                 }
 
-                State::MovingLeft(_i) => {
+                State::MovingDownLeft => {
                     for column in &mut self.aliens {
                         for mut alien in column {
                             alien.move_y(STEP_DY);
@@ -160,7 +161,18 @@ impl Wave {
                         }
                     }
 
-                    self.state = State::MovingRight(0);
+                    self.state = State::MovingLeft;
+                }
+
+                State::MovingDownRight => {
+                    for column in &mut self.aliens {
+                        for mut alien in column {
+                            alien.move_y(STEP_DY);
+                            alien.change_state();
+                        }
+                    }
+
+                    self.state = State::MovingRight;
                 }
             }
         }

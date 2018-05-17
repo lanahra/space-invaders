@@ -277,6 +277,8 @@ impl Game {
             }
         }
 
+        self.bullets = bullets.to_vec();
+
         self.bunkers.clear();
         self.wave.clear();
 
@@ -285,8 +287,6 @@ impl Game {
             self.info.canons += 1;
             self.wave = wave::Wave::new();
         }
-
-        self.bullets = bullets.to_vec();
     }
 
     pub fn update(&mut self, dt: f64) {
