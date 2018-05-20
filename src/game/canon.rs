@@ -6,6 +6,7 @@ const VELOCITY: f64 = 800.0;
 const RIGHT_BOUND: f64 = 900.0;
 const LEFT_BOUND: f64 = 45.0;
 
+#[derive(Copy, Clone)]
 pub enum State {
     Idle,
     MovingRight,
@@ -13,6 +14,7 @@ pub enum State {
     Dead,
 }
 
+#[derive(Copy, Clone)]
 pub struct Canon {
     pub position: Position,
     pub size: Size,
@@ -36,64 +38,108 @@ impl Canon {
         }
     }
 
-    pub fn move_right(&mut self) {
-        match self.state {
-            State::Dead => {}
+    pub fn move_right(canon: Canon) -> Canon {
+        match canon.state {
+            State::Dead => {
+                canon
+            }
 
             _ => {
-                self.state = State::MovingRight;
+                Canon {
+                    state: State::MovingRight,
+                    ..canon
+                }
             }
         }
     }
 
-    pub fn move_left(&mut self) {
-        match self.state {
-            State::Dead => {}
+    pub fn move_left(canon: Canon) -> Canon {
+        match canon.state {
+            State::Dead => {
+                canon
+            }
 
             _ => {
-                self.state = State::MovingLeft;
+                Canon {
+                    state: State::MovingLeft,
+                    ..canon
+                }
             }
         }
     }
 
-    pub fn idle(&mut self) {
-        match self.state {
-            State::Dead => {}
+    pub fn idle(canon: Canon) -> Canon {
+        match canon.state {
+            State::Dead => {
+                canon
+            }
 
             _ => {
-                self.state = State::Idle;
+                Canon {
+                    state: State::Idle,
+                    ..canon
+                }
             }
         }
     }
 
-    pub fn update(&mut self, dt: f64) {
-        match self.state {
+    pub fn update(dt: f64, canon: Canon) -> Canon {
+        match canon.state {
             State::MovingRight => {
-                if self.position.x + self.size.width / 2.0 < RIGHT_BOUND {
-                    self.move_x(dt * VELOCITY);
+                if canon.position.x + canon.size.width / 2.0 < RIGHT_BOUND {
+                    Canon::move_x(dt * VELOCITY, canon)
+                } else {
+                    canon
                 }
             }
 
             State::MovingLeft => {
-                if self.position.x - self.size.width / 2.0 > LEFT_BOUND {
-                    self.move_x(-dt * VELOCITY);
+                if canon.position.x - canon.size.width / 2.0 > LEFT_BOUND {
+                    Canon::move_x(dt * -VELOCITY, canon)
+                } else {
+                    canon
                 }
             }
 
-            _ => {}
+            _ => {
+                canon
+            }
         }
     }
 }
 
 impl Entity for Canon {
-    fn position(&mut self) -> &mut Position {
-        &mut self.position
+    fn position(entity: &Self) -> Position {
+        entity.position
     }
 
-    fn size(&mut self) -> &mut Size {
-        &mut self.size
+    fn size(entity: &Self) -> Size {
+        entity.size
     }
 }
 
 impl Solid for Canon {}
-impl Kinetic for Canon {}
+
+impl Kinetic for Canon {
+    fn move_x(dx: f64, entity: Self) -> Self {
+        Canon {
+            position:
+                Position {
+                    x: entity.position.x + dx,
+                    y: entity.position.y,
+                },
+            ..entity
+        }
+    }
+
+    fn move_y(dy: f64, entity: Self) -> Self {
+        Canon {
+            position:
+                Position {
+                    x: entity.position.x,
+                    y: entity.position.y + dy,
+                },
+            ..entity
+        }
+    }
+}

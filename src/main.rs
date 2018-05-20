@@ -11,6 +11,7 @@ mod game;
 
 use draw::Draw;
 use game::Game;
+use game::canon::Canon;
 use opengl_graphics::{ GlGraphics, OpenGL };
 use piston::event_loop::*;
 use piston_window::*;
@@ -80,32 +81,37 @@ impl App {
             }
 
             _ => {
-                self.game.update(args.dt);
+                self.game = Game::update(args.dt, self.game.clone());
             }
         }
     }
 
     fn input(&mut self, args: &ButtonArgs) {
-        let game = &mut self.game;
-
-
         match args.state {
             ButtonState::Press => {
-                match game.info.state {
+                match self.game.info.state {
                     game::State::Running => {
                         match args.button {
                             Button::Keyboard(Key::A)
                             | Button::Keyboard(Key::Left) => {
-                                game.canon.move_left();
+                                self.game =
+                                    Game {
+                                        canon: Canon::move_left(self.game.canon),
+                                        ..self.game.clone()
+                                    };
                             }
 
                             Button::Keyboard(Key::D)
                             | Button::Keyboard(Key::Right) => {
-                                game.canon.move_right();
+                                self.game =
+                                    Game {
+                                        canon: Canon::move_right(self.game.canon),
+                                        ..self.game.clone()
+                                    };
                             }
 
                             Button::Keyboard(Key::Space) => {
-                                game.canon_fire();
+                                self.game = Game::canon_fire(self.game.clone());
                             }
 
                             _ => {}
@@ -118,11 +124,13 @@ impl App {
                             | Button::Keyboard(Key::Up)
                             | Button::Keyboard(Key::S)
                             | Button::Keyboard(Key::Down) => {
-                                game.change_selection();
+                                self.game =
+                                    Game::change_selection(self.game.clone());
                             }
 
                             Button::Keyboard(Key::Return) => {
-                                game.make_selection();
+                                self.game =
+                                    Game::make_selection(self.game.clone());
                             }
 
                             _ => {}
@@ -132,17 +140,25 @@ impl App {
             }
 
             ButtonState::Release => {
-                match game.info.state {
+                match self.game.info.state {
                     game::State::Running => {
                         match args.button {
                             Button::Keyboard(Key::A)
                             | Button::Keyboard(Key::Left) => {
-                                game.canon.idle();
+                                self.game =
+                                    Game {
+                                        canon: Canon::idle(self.game.canon),
+                                        ..self.game.clone()
+                                    };
                             }
 
                             Button::Keyboard(Key::D)
                             | Button::Keyboard(Key::Right) => {
-                                game.canon.idle();
+                                self.game =
+                                    Game {
+                                        canon: Canon::idle(self.game.canon),
+                                        ..self.game.clone()
+                                    };
                             }
 
                             _ => {}

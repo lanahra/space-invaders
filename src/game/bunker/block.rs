@@ -3,6 +3,7 @@ use game::entity::*;
 pub const WIDTH: f64 = 32.0;
 pub const HEIGHT: f64 = 23.0;
 
+#[derive(Copy, Clone)]
 pub enum State {
     Full,
     Half,
@@ -10,6 +11,7 @@ pub enum State {
     Dead,
 }
 
+#[derive(Copy, Clone)]
 pub enum Kind {
     Normal,
     BottomLeft,
@@ -18,6 +20,7 @@ pub enum Kind {
     TopRight,
 }
 
+#[derive(Copy, Clone)]
 pub struct Block {
     pub position: Position,
     pub kind: Kind,
@@ -39,32 +42,43 @@ impl Block {
         }
     }
 
-    pub fn change_state(&mut self) {
-        match self.state {
+    pub fn change_state(block: Block) -> Block {
+        match block.state {
             State::Full => {
-                self.state = State::Half;
+                Block {
+                    state: State::Half,
+                    ..block
+                }
             }
 
             State::Half => {
-                self.state = State::Weak;
+                Block {
+                    state: State::Weak,
+                    ..block
+                }
             }
 
             State::Weak => {
-                self.state = State::Dead;
+                Block {
+                    state: State::Dead,
+                    ..block
+                }
             }
 
-            State::Dead => {}
+            State::Dead => {
+                block
+            }
         }
     }
 }
 
 impl Entity for Block {
-    fn position(&mut self) -> &mut Position {
-        &mut self.position
+    fn position(entity: &Self) -> Position {
+        entity.position
     }
 
-    fn size(&mut self) -> &mut Size {
-        &mut self.size
+    fn size(entity: &Self) -> Size {
+        entity.size
     }
 }
 

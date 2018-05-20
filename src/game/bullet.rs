@@ -2,13 +2,13 @@ use game::entity::*;
 
 const VELOCITY: f64 = 700.0;
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub enum State {
     MovingUp,
     MovingDown,
 }
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub struct Bullet {
     pub position: Position,
     pub size: Size,
@@ -28,28 +28,62 @@ impl Bullet {
         }
     }
 
-    pub fn update(&mut self, dt: f64) {
-        match self.state {
+    pub fn update(dt: f64, bullet: Bullet) -> Bullet {
+        match bullet.state {
             State::MovingUp => {
-                self.move_y(dt * -VELOCITY);
+                Bullet::move_y(dt * -VELOCITY, bullet)
             }
 
             State::MovingDown => {
-                self.move_y(dt * VELOCITY);
+                Bullet::move_y(dt * VELOCITY, bullet)
             }
+        }
+    }
+
+    fn move_y(dy: f64, bullet: Bullet) -> Bullet {
+        Bullet {
+            position:
+                Position {
+                    x: bullet.position.x,
+                    y: bullet.position.y + dy,
+                },
+            ..bullet
         }
     }
 }
 
 impl Entity for Bullet {
-    fn position(&mut self) -> &mut Position {
-        &mut self.position
+    fn position(entity: &Self) -> Position {
+        entity.position
     }
 
-    fn size(&mut self) -> &mut Size {
-        &mut self.size
+    fn size(entity: &Self) -> Size {
+        entity.size
     }
 }
 
 impl Solid for Bullet {}
-impl Kinetic for Bullet {}
+
+impl Kinetic for Bullet {
+    fn move_x(dx: f64, entity: Self) -> Self {
+        Bullet {
+            position:
+                Position {
+                    x: entity.position.x + dx,
+                    y: entity.position.y,
+                },
+            ..entity
+        }
+    }
+
+    fn move_y(dy: f64, entity: Self) -> Self {
+        Bullet {
+            position:
+                Position {
+                    x: entity.position.x,
+                    y: entity.position.y + dy,
+                },
+            ..entity
+        }
+    }
+}

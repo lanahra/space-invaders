@@ -3,7 +3,7 @@ use game;
 use game::Game;
 use game::canon;
 use game::wave::alien;
-use game::bunkers::block;
+use game::bunker::block;
 use graphics;
 use assets::Assets;
 use graphics::*;
@@ -279,9 +279,7 @@ impl Draw {
         c: &Context,
         gl: &mut GlGraphics) {
 
-        let explosions = &game.explosions;
-
-        for e in &explosions.explosions {
+        for e in &game.explosions {
             let transform =
                 c.transform
                     .trans(
@@ -390,7 +388,7 @@ impl Draw {
 
         let bunkers = &game.bunkers;
 
-        for bunker in &bunkers.bunkers {
+        for bunker in bunkers {
             for block in &bunker.blocks {
                 let transform =
                     c.transform

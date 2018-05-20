@@ -2,13 +2,13 @@ use game::entity::*;
 
 const VELOCITY: f64 = 250.0;
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub enum State {
     MovingLeft,
     MovingRight,
 }
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub struct Spaceship {
     pub position: Position,
     pub size: Size,
@@ -28,28 +28,51 @@ impl Spaceship {
         }
     }
 
-    pub fn update(&mut self, dt: f64) {
-        match self.state {
+    pub fn update(dt: f64, spaceship: Spaceship) -> Spaceship {
+        match spaceship.state {
             State::MovingLeft => {
-                self.move_x(dt * -VELOCITY);
+                Spaceship::move_x(dt * -VELOCITY, spaceship)
             }
 
             State::MovingRight => {
-                self.move_x(dt * VELOCITY);
+                Spaceship::move_x(dt * VELOCITY, spaceship)
             }
         }
     }
 }
 
 impl Entity for Spaceship {
-    fn position(&mut self) -> &mut Position {
-        &mut self.position
+    fn position(entity: &Self) -> Position {
+        entity.position
     }
 
-    fn size(&mut self) -> &mut Size {
-        &mut self.size
+    fn size(entity: &Self) -> Size {
+        entity.size
     }
 }
 
 impl Solid for Spaceship {}
-impl Kinetic for Spaceship {}
+
+impl Kinetic for Spaceship {
+    fn move_x(dx: f64, entity: Self) -> Self {
+        Spaceship {
+            position:
+                Position {
+                    x: entity.position.x + dx,
+                    y: entity.position.y,
+                },
+            ..entity
+        }
+    }
+
+    fn move_y(dy: f64, entity: Self) -> Self {
+        Spaceship {
+            position:
+                Position {
+                    x: entity.position.x,
+                    y: entity.position.y + dy,
+                },
+            ..entity
+        }
+    }
+}

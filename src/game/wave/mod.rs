@@ -18,163 +18,240 @@ const HEIGHT_GAP: f64 = 64.0;
 const STEP_DX: f64 = 10.0;
 const STEP_DY: f64 = 10.0;
 
-enum State {
+#[derive(Clone)]
+pub enum State {
     MovingRight,
     MovingLeft,
     MovingDownLeft,
     MovingDownRight,
 }
 
+#[derive(Clone)]
 pub struct Wave {
     pub aliens: Vec<Vec<Alien>>,
     pub step: f64,
-    timer: f64,
-    state: State,
+    pub time: f64,
+    pub state: State,
 }
 
 impl Wave {
     pub fn new() -> Wave {
         Wave {
-            aliens: Wave::create_aliens(),
+            aliens: Wave::new_aliens(),
             step: 0.55,
-            timer: 0.0,
+            time: 0.0,
             state: State::MovingRight,
         }
     }
 
-    fn create_aliens() -> Vec<Vec<Alien>> {
-        let mut aliens = Vec::new();
+    fn new_aliens() -> Vec<Vec<Alien>> {
+        let new_alien = |pos| {
+            let (j, i): (u32, u32) = pos;
+            let position =
+                Position {
+                    x: self::POSITION.x + (j as f64 * self::WIDTH_GAP),
+                    y: self::POSITION.y + (i as f64 * self::HEIGHT_GAP),
+                };
 
-        for j in 0..COLUMNS {
-            let mut column = Vec::new();
-            for i in 0..ROWS {
-                let position =
-                    Position {
-                        x: self::POSITION.x + (j as f64 * self::WIDTH_GAP),
-                        y: self::POSITION.y + (i as f64 * self::HEIGHT_GAP),
-                    };
-
-                let alien =
-                    match i {
-                        0 =>
-                            Alien::new(position, self::Kind::Alpha),
-
-                        1 | 2 =>
-                            Alien::new(position, self::Kind::Beta),
-
-                        _ =>
-                            Alien::new(position, self::Kind::Gamma),
-                    };
-
-                column.push(alien);
-            }
-
-            aliens.push(column);
-        }
-
-        return aliens;
-    }
-
-    pub fn len(&self) -> usize {
-        let mut len: usize = 0;
-
-        for column in &self.aliens {
-            len += column.len();
-        }
-
-        len
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-
-    pub fn clear(&mut self) {
-        for column in &mut self.aliens {
-            column.retain(|alien| {
-                match alien.state {
-                    alien::State::Dead => {
-                        false
-                    }
-
-                    _ => {
-                        true
-                    }
+            match i {
+                0 => {
+                    Alien::new(position, self::Kind::Alpha)
                 }
-            });
+
+                1 | 2 => {
+                    Alien::new(position, self::Kind::Beta)
+                }
+
+                _ => {
+                    Alien::new(position, self::Kind::Gamma)
+                }
+            }
+        };
+
+        struct New<'a> {
+            rows: &'a Fn(&New, u32, Vec<u32>, Vec<Alien>) -> Vec<Alien>,
+            columns: &'a Fn(&New, Vec<u32>, Vec<Vec<Alien>>) -> Vec<Vec<Alien>>,
         }
 
-        self.aliens.retain(|column| {
-            !column.is_empty()
-        });
+        let new =
+            New {
+                rows: &|new, j, position, rows| {
+                    if position.len() >= 1 {
+                        let (head, tail) = position.split_at(1);
+
+                        let pos = (j, head[0]);
+                        let alien = new_alien(pos);
+                        let mut rows = rows.to_vec();
+                        rows.push(alien);
+
+                        (new.rows)(new, j, tail.to_vec(), rows)
+                    } else {
+                        rows
+                    }
+                },
+
+                columns: &|new, positions, columns| {
+                    let rows = (0..ROWS).collect();
+                    if positions.len() >= 1 {
+                        let (head, tail) = positions.split_at(1);
+
+                        let rows = (new.rows)(new, head[0], rows, Vec::new());
+                        let mut columns = columns.to_vec();
+                        columns.push(rows);
+
+                        (new.columns)(new, tail.to_vec(), columns)
+                    } else {
+                        columns
+                    }
+                },
+            };
+
+        let columns = (0..COLUMNS).collect();
+        (new.columns)(&new, columns, Vec::new())
     }
 
-    pub fn update(&mut self, dt: f64) {
-        let ts = self.len() as f64 / (2 * ROWS * COLUMNS) as f64;
-        self.step = ts + 0.05;
+    pub fn len(wave: Wave) -> usize {
+        struct Count<'a> {
+            f: &'a Fn(&Count, Vec<Vec<Alien>>) -> usize,
+        }
 
-        self.timer += dt;
+        let count =
+            Count {
+                f: &|count, wave| {
+                    if wave.len() >= 1 {
+                        let (head, tail) = wave.split_at(1);
 
-        if self.timer >= self.step {
-            self.timer -= self.step;
-
-            match self.state {
-                State::MovingRight => {
-                    for column in &mut self.aliens {
-                        for mut alien in column {
-                            alien.move_x(STEP_DX);
-                            alien.change_state();
-                        }
+                        head[0].len() + (count.f)(count, tail.to_vec())
+                    } else {
+                        0
                     }
+                },
+            };
 
-                    if let Some(column) = self.aliens.last() {
+        (count.f)(&count, wave.aliens)
+    }
+
+    fn update_step(wave: Wave) -> Wave {
+        let ts = Wave::len(wave.clone()) as f64 / (2 * ROWS * COLUMNS) as f64;
+
+        Wave {
+            step: ts + 0.05,
+            ..wave
+        }
+    }
+
+    fn update_time(dt: f64, wave: Wave) -> Wave {
+        Wave {
+            time: wave.time + dt,
+            ..wave
+        }
+    }
+
+    pub fn update(dt: f64, wave: Wave) -> Wave {
+        let wave = Wave::update_step(wave);
+        let wave = Wave::update_time(dt, wave);
+
+        if wave.time >= wave.step {
+            let wave = Wave::update_time(-wave.step, wave);
+
+            match wave.state {
+                State::MovingRight => {
+                    let aliens: Vec<Vec<Alien>> =
+                        wave.aliens.iter().map(|column| {
+                            column.iter().map(|&alien| {
+                                let alien = Alien::move_x(STEP_DX, alien);
+                                Alien::change_state(alien)
+                            }).collect()
+                        }).collect();
+
+                    if let Some(column) = aliens.clone().last() {
                         if let Some(alien) = column.last() {
                             if alien.position.x > 865.0 {
-                                self.state = State::MovingDownLeft;
+                                return
+                                    Wave {
+                                        aliens,
+                                        state: State::MovingDownLeft,
+                                        ..wave
+                                    };
+                            } else {
+                                return
+                                    Wave {
+                                        aliens,
+                                        ..wave
+                                    };
                             }
                         }
                     }
+
+                    return wave;
                 }
 
                 State::MovingLeft => {
-                    for column in &mut self.aliens {
-                        for mut alien in column {
-                            alien.move_x(-STEP_DX);
-                            alien.change_state();
-                        }
-                    }
+                    let aliens: Vec<Vec<Alien>> =
+                        wave.aliens.iter().map(|column| {
+                            column.iter().map(|&alien| {
+                                let alien = Alien::move_x(-STEP_DX, alien);
+                                Alien::change_state(alien)
+                            }).collect()
+                        }).collect();
 
-                    if let Some(column) = self.aliens.first() {
+                    if let Some(column) = aliens.clone().first() {
                         if let Some(alien) = column.first() {
                             if alien.position.x < 80.0 {
-                                self.state = State::MovingDownRight;
+                                return
+                                    Wave {
+                                        aliens,
+                                        state: State::MovingDownRight,
+                                        ..wave
+                                    };
+                            } else {
+                                return
+                                    Wave {
+                                        aliens,
+                                        ..wave
+                                    };
                             }
                         }
                     }
+
+                    return wave;
                 }
 
                 State::MovingDownLeft => {
-                    for column in &mut self.aliens {
-                        for mut alien in column {
-                            alien.move_y(STEP_DY);
-                            alien.change_state();
-                        }
+                    let aliens: Vec<Vec<Alien>> =
+                        wave.aliens.iter().map(|column| {
+                            column.iter().map(|&alien| {
+                                let alien = Alien::move_y(STEP_DY, alien);
+                                Alien::change_state(alien)
+                            }).collect()
+                        }).collect();
+
+                    Wave {
+                        aliens,
+                        state: State::MovingLeft,
+                        ..wave
                     }
 
-                    self.state = State::MovingLeft;
                 }
 
                 State::MovingDownRight => {
-                    for column in &mut self.aliens {
-                        for mut alien in column {
-                            alien.move_y(STEP_DY);
-                            alien.change_state();
-                        }
-                    }
+                    let aliens: Vec<Vec<Alien>> =
+                        wave.aliens.iter().map(|column| {
+                            column.iter().map(|&alien| {
+                                let alien = Alien::move_y(STEP_DY, alien);
+                                Alien::change_state(alien)
+                            }).collect()
+                        }).collect();
 
-                    self.state = State::MovingRight;
+                    Wave {
+                        aliens,
+                        state: State::MovingRight,
+                        ..wave
+                    }
                 }
             }
+        } else {
+            wave
         }
     }
 }
