@@ -19,11 +19,13 @@ const MYSTERY_STEP: f64 = 10.0;
 
 pub enum Selection {
     NewGame,
+    Records,
     Exit,
 }
 
 pub enum State {
     Menu(Selection),
+    Records,
     Running,
     Paused,
     Over,
@@ -71,14 +73,36 @@ impl Game {
         }
     }
 
-    pub fn change_selection(&mut self) {
+    pub fn change_selection_down(&mut self) {
         match self.info.state {
             State::Menu(Selection::NewGame) => {
+                self.info.state = State::Menu(Selection::Records);
+            }
+
+            State::Menu(Selection::Records) => {
                 self.info.state = State::Menu(Selection::Exit);
             }
 
             State::Menu(Selection::Exit) => {
                 self.info.state = State::Menu(Selection::NewGame);
+            }
+
+            _ => {}
+        }
+    }
+
+    pub fn change_selection_up(&mut self) {
+        match self.info.state {
+            State::Menu(Selection::NewGame) => {
+                self.info.state = State::Menu(Selection::Exit);
+            }
+
+            State::Menu(Selection::Records) => {
+                self.info.state = State::Menu(Selection::NewGame);
+            }
+
+            State::Menu(Selection::Exit) => {
+                self.info.state = State::Menu(Selection::Records);
             }
 
             _ => {}
@@ -91,12 +115,20 @@ impl Game {
                 self.info.state = State::Running;
             }
 
+            State::Menu(Selection::Records) => {
+                self.info.state = State::Records;
+            }
+
             State::Menu(Selection::Exit) => {
                 self.info.state = State::Exit;
             }
 
             State::Over => {
                 self.info.state = State::Restart;
+            }
+
+            State::Records => {
+                self.info.state = State::Menu(Selection::NewGame);
             }
 
             _ => {}

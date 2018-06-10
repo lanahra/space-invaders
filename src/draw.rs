@@ -74,6 +74,10 @@ impl Draw {
                 Draw::draw_game_over(game, assets, c, gl);
             }
 
+            game::State::Records => {
+                Draw::draw_records(game, assets, c, gl);
+            }            
+
             game::State::Menu(ref _s) => {
                 Draw::draw_menu(game, assets, c, gl);
             }
@@ -647,9 +651,22 @@ impl Draw {
             gl
         ).unwrap();
 
+
         let transform =
             c.transform
                 .trans(150.0, 650.0);
+
+        text::Text::new_color(WHITE, 34).draw(
+            "records",
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+
+        let transform =
+            c.transform
+                .trans(150.0, 700.0);
 
         text::Text::new_color(WHITE, 34).draw(
             "exit",
@@ -665,9 +682,14 @@ impl Draw {
                     .trans(120.0, 600.0)
             }
 
-            game::State::Menu(game::Selection::Exit) => {
+            game::State::Menu(game::Selection::Records) => {
                 c.transform
                     .trans(120.0, 650.0)
+            }
+
+            game::State::Menu(game::Selection::Exit) => {
+                c.transform
+                    .trans(120.0, 700.0)
             }
 
             _ => {
@@ -682,5 +704,49 @@ impl Draw {
             transform,
             gl
         ).unwrap();
+    }
+
+    fn draw_records(
+        game: &Game,
+        assets: &mut Assets,
+        c: &Context,
+        gl: &mut GlGraphics) {
+
+        let transform =
+            c.transform
+                .trans(150.0, 200.0);
+
+        text::Text::new_color(WHITE, 50).draw(
+            "records",
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+   
+        let transform =
+            c.transform
+                .trans(150.0, 900.0);
+
+        text::Text::new_color(WHITE, 34).draw(
+            "exit",
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+
+        let transform =
+            c.transform
+                .trans(120.0, 900.0);
+
+        text::Text::new_color(WHITE, 34).draw(
+            ">",
+            &mut assets.font,
+            &c.draw_state,
+            transform,
+            gl
+        ).unwrap();
+
     }
 }

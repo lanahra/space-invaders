@@ -112,13 +112,26 @@ impl App {
                         }
                     }
 
+                    game::State::Records => {
+                        match args.button {
+                            Button::Keyboard(Key::Return) => {
+                                game.make_selection();
+                            }
+
+                            _ => {}
+                        }
+                    }
+
                     _ => {
                         match args.button {
-                            Button::Keyboard(Key::W)
-                            | Button::Keyboard(Key::Up)
                             | Button::Keyboard(Key::S)
                             | Button::Keyboard(Key::Down) => {
-                                game.change_selection();
+                                game.change_selection_down();
+                            }
+
+                            Button::Keyboard(Key::W)
+                            | Button::Keyboard(Key::Up) => {
+                                game.change_selection_up();
                             }
 
                             Button::Keyboard(Key::Return) => {
