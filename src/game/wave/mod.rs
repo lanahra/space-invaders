@@ -147,9 +147,20 @@ impl Wave {
         }
     }
 
+    fn move_alien(dx: f64, dy: f64) -> impl Fn(Alien) -> Alien {
+        move |alien| {
+            let alien = Alien::move_x(dx, alien);
+            Alien::move_y(dy, alien)
+        }
+    }
+
     pub fn update(dt: f64, wave: Wave) -> Wave {
         let wave = Wave::update_step(wave);
         let wave = Wave::update_time(dt, wave);
+
+        let move_right = Wave::move_alien(STEP_DX, 0.0);
+        let move_left = Wave::move_alien(-STEP_DX, 0.0);
+        let move_down = Wave::move_alien(0.0, STEP_DY);
 
         if wave.time >= wave.step {
             let wave = Wave::update_time(-wave.step, wave);
@@ -159,7 +170,7 @@ impl Wave {
                     let aliens: Vec<Vec<Alien>> =
                         wave.aliens.iter().map(|column| {
                             column.iter().map(|&alien| {
-                                let alien = Alien::move_x(STEP_DX, alien);
+                                let alien = move_right(alien);
                                 Alien::change_state(alien)
                             }).collect()
                         }).collect();
@@ -190,7 +201,7 @@ impl Wave {
                     let aliens: Vec<Vec<Alien>> =
                         wave.aliens.iter().map(|column| {
                             column.iter().map(|&alien| {
-                                let alien = Alien::move_x(-STEP_DX, alien);
+                                let alien = move_left(alien);
                                 Alien::change_state(alien)
                             }).collect()
                         }).collect();
@@ -221,7 +232,7 @@ impl Wave {
                     let aliens: Vec<Vec<Alien>> =
                         wave.aliens.iter().map(|column| {
                             column.iter().map(|&alien| {
-                                let alien = Alien::move_y(STEP_DY, alien);
+                                let alien = move_down(alien);
                                 Alien::change_state(alien)
                             }).collect()
                         }).collect();
