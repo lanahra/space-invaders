@@ -21,8 +21,8 @@ impl Bullet {
             position,
             size:
                 Size {
-                    width: 2.0,
-                    height: 17.0,
+                    width: 5.0,
+                    height: 18.0,
                 },
             state,
         }
