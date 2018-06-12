@@ -21,6 +21,7 @@ pub struct App {
     window: PistonWindow ,
     game: Game,
     assets: assets::Assets,
+    pub highscores: Vec<u32>,
 }
 
 impl App {
@@ -36,11 +37,13 @@ impl App {
             .build()
             .unwrap();
 
+
         return App {
             window,
             gl: GlGraphics::new(opengl),
             game: Game::new(),
             assets: assets::Assets::new(),
+            highscores: Vec::with_capacity(10),
         };
     }
 
@@ -80,7 +83,7 @@ impl App {
             }
 
             _ => {
-                self.game.update(args.dt);
+                self.game.update(&mut self.highscores, args.dt);
             }
         }
     }

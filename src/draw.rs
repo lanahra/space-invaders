@@ -32,6 +32,7 @@ impl Draw {
                 draw_size: [width as u32, height as u32],
             };
 
+        let highscores = &app.highscores; 
         let game = &app.game;
         let mut assets = &mut app.assets;
 
@@ -44,11 +45,12 @@ impl Draw {
 
             c.transform = transform;
 
-            Draw::draw(&game, &mut assets, &c, gl);
+            Draw::draw(highscores, &game, &mut assets, &c, gl);
         });
     }
 
     fn draw(
+        highscores: &Vec<u32>,
         game: &Game,
         assets: &mut Assets,
         c: &Context,
@@ -75,7 +77,7 @@ impl Draw {
             }
 
             game::State::Records => {
-                Draw::draw_records(game, assets, c, gl);
+                Draw::draw_records(highscores, game, assets, c, gl);
             }            
 
             game::State::Menu(ref _s) => {
@@ -707,10 +709,13 @@ impl Draw {
     }
 
     fn draw_records(
+        highscores: &Vec<u32>,
         game: &Game,
         assets: &mut Assets,
         c: &Context,
         gl: &mut GlGraphics) {
+
+        let mut position = 300.0;
 
         let transform =
             c.transform
@@ -723,7 +728,23 @@ impl Draw {
             transform,
             gl
         ).unwrap();
-   
+
+        for i in 0..(*highscores).len() as isize {
+            let transform =
+            c.transform
+                .trans(150.0, position);
+
+            text::Text::new_color(WHITE, 34).draw(
+                &format!("{:04}", (*highscores)[(i as usize)]),
+                &mut assets.font,
+                &c.draw_state,
+                transform,
+                gl
+            ).unwrap();
+
+            position += 50.0;
+        }
+
         let transform =
             c.transform
                 .trans(150.0, 900.0);

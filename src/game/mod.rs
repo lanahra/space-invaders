@@ -6,6 +6,7 @@ pub mod bunkers;
 pub mod canon;
 pub mod wave;
 
+
 use game::entity::*;
 use rand::{Rng, thread_rng};
 use std::vec::Vec;
@@ -40,6 +41,7 @@ pub struct Info {
     rand_time: f64,
     paused_time: f64,
     mystery_time: f64,
+
 }
 
 pub struct Game {
@@ -50,6 +52,7 @@ pub struct Game {
     pub bunkers: bunkers::Bunkers,
     pub explosions: explosions::Explosions,
     pub info: Info,
+    pub save: bool,
 }
 
 impl Game {
@@ -70,6 +73,7 @@ impl Game {
                     paused_time: 0.0,
                     mystery_time: 0.0,
                 },
+            save: false,
         }
     }
 
@@ -350,7 +354,7 @@ impl Game {
         }
     }
 
-    pub fn update(&mut self, dt: f64) {
+    pub fn update(&mut self, highscores: &mut Vec<u32>, dt: f64) {
         match self.info.state {
             State::Running => {
                 self.wave.update(dt);
@@ -373,7 +377,22 @@ impl Game {
                 }
             }
 
+            State::Over => {
+                if !self.save {
+                    self.update_records(highscores);
+                    self.save = true;
+                }
+                
+            }
+
             _ => {}
         }
+    }
+
+    pub fn update_records(&mut self, highscores: &mut Vec <u32>) {
+        //(*highscores) = vec![0;10];
+        let score = self.info.score;
+        (*highscores).push(score);
+        (*highscores).sort_by(|a, b| b.cmp(a));
     }
 }
