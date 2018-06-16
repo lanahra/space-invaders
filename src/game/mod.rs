@@ -391,7 +391,9 @@ impl Game {
 
     pub fn update_records(&mut self, highscores: &mut Vec <u32>) {
         let score = self.info.score;
-        (*highscores).push(score);
-        (*highscores).sort_by(|a, b| b.cmp(a));
+        if score > (*highscores)[9] {
+            (*highscores)[9] = score;
+            (*highscores).sort_by(|a, b| b.cmp(a));
+        }
     }
 }

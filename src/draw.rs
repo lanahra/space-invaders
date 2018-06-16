@@ -742,7 +742,7 @@ impl Draw {
                 gl
             ).unwrap();
 
-            position += 50.0;
+            position += 55.0;
         }
 
         let transform =

@@ -37,13 +37,18 @@ impl App {
             .build()
             .unwrap();
 
+        let mut highscores: Vec<u32> = Vec::new();
+        highscores = Vec::with_capacity(10);
+        highscores = vec![0; 10];
+
+
 
         return App {
             window,
             gl: GlGraphics::new(opengl),
             game: Game::new(),
             assets: assets::Assets::new(),
-            highscores: Vec::with_capacity(10),
+            highscores,
         };
     }
 
